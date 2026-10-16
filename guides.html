@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Guides | Trail With Us</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body
+    data-page="guides"
+    data-title="Guides"
+    data-sub="Local guide profiles, ranked by how well they fit your trip. Check each profile for verification status."
+    data-img="hikers"
+  >
+    <div class="w">
+      <div class="ctl">
+        <label>State<select data-k="state"></select></label
+        ><label>Place to visit<select data-k="dest"></select></label
+        ><label>Guide speaks<select data-k="lang"></select></label
+        ><label>Interest<select data-k="tag"></select></label
+        ><label>Days<select data-k="days"></select></label>
+      </div>
+    </div>
+    <section style="padding-bottom: 90px">
+      <div class="w">
+        <p id="n" style="margin-bottom: 24px; font-weight: 700"></p>
+        <div class="grid" id="l"></div>
+      </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+    <script>
+      bind(() => {
+        const m = matches();
+        $("#n").textContent =
+          st.state === "All states"
+            ? `Best guide matches for ${st.dest}. Showing ${m.length} guide profiles, ranked by destination, language and interests.`
+            : `Guide listings in ${st.state} for ${st.dest}.`;
+        $("#l").innerHTML = m.length
+          ? m.map((x) => guideCard(x.g, x.i, x.s, x.r, st.days)).join("")
+          : `<div class="empty-state"><span>🧭</span><h2>No guide profiles published for ${st.state} yet</h2><p>We do not have an approved local guide listing in this state in the current catalogue. You can still explore the destination or apply to become a guide.</p><a class="btn" href="destinations.html?state=${encodeURIComponent(st.state)}">Explore ${st.state}</a><a class="btn alt" href="login.html?mode=signup">Create an account</a></div>`;
+      });
+    </script>
+    <script src="motion.js" defer></script>
+  </body>
+</html>

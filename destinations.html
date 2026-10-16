@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Explore famous places across all eight Northeast Indian states with Trail With Us."
+    />
+    <title>Explore Northeast India | Trail With Us</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body
+    data-page="destinations"
+    data-title="Explore Northeast India"
+    data-sub="Eight states, from Himalayan passes to river islands."
+    data-img="valley"
+  >
+    <main class="destination-explorer">
+      <section class="destination-intro w">
+        <p class="eyebrow">THE EIGHT-STATE NORTHEAST</p>
+        <h1>Find the place<br /><em>that stays with you.</em></h1>
+        <p>
+          Explore iconic landscapes, living culture, wildlife and heritage
+          across Arunachal Pradesh, Assam, Manipur, Meghalaya, Mizoram,
+          Nagaland, Sikkim and Tripura.
+        </p>
+      </section>
+      <section class="destination-controls w" aria-label="Filter destinations">
+        <label>1. Choose a state<select id="destination-state"></select></label>
+        <label>2. Choose a place<select id="destination-place"></select></label>
+        <label
+          >Search places<input
+            id="destination-search"
+            type="search"
+            placeholder="Try lakes, monasteries, waterfalls…"
+        /></label>
+        <button id="clear-destination-filters" class="btn alt" type="button">
+          Clear filters
+        </button>
+      </section>
+      <section class="w destination-results-wrap">
+        <div class="destination-results-heading">
+          <div>
+            <p class="eyebrow" id="destination-kicker">CURATED PLACES</p>
+            <h2 id="destination-results-title">All eight states</h2>
+          </div>
+          <span id="destination-count" aria-live="polite"></span>
+        </div>
+        <div id="destination-results" class="destination-results"></div>
+        <p class="destination-note">
+          Travel conditions and entry rules can change. Check official notices
+          and local guidance before visiting protected areas or high-altitude
+          destinations.
+        </p>
+      </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+    <script>
+      (async () => {
+        const $ = (selector) => document.querySelector(selector);
+        if (window.twuLoadPublishedPlaces)
+          await window.twuLoadPublishedPlaces();
+        const stateSelect = $("#destination-state");
+        const placeSelect = $("#destination-place");
+        const search = $("#destination-search");
+        const params = new URLSearchParams(location.search);
+        let chosenState =
+          params.get("state") && STATES.includes(params.get("state"))
+            ? params.get("state")
+            : "All states";
+        let chosenPlace =
+          params.get("dest") && DEST.includes(params.get("dest"))
+            ? params.get("dest")
+            : "All places";
+        const escapeHtml = (value) =>
+          String(value ?? "").replace(
+            /[&<>"']/g,
+            (char) =>
+              ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;",
+              })[char],
+          );
+        const imageFor = (destination) =>
+          !destination.image
+            ? "assets/valley.jpg"
+            : /^https:\/\//i.test(destination.image)
+              ? destination.image
+              : destination.image.startsWith("assets/")
+                ? destination.image
+                : `assets/${destination.image.replace(/\.jpg$/i, "")}.jpg`;
+        function fillPlaces() {
+          const options = DESTINATION_CATALOG.filter(
+            (place) =>
+              window.twuIsDestinationVisible?.(place.place) !== false &&
+              (chosenState === "All states" || place.state === chosenState),
+          ).map((place) => place.place);
+          if (chosenPlace !== "All places" && !options.includes(chosenPlace))
+            chosenPlace = "All places";
+          placeSelect.innerHTML = ["All places", ...options]
+            .map(
+              (place) =>
+                `<option value="${escapeHtml(place)}"${place === chosenPlace ? " selected" : ""}>${escapeHtml(place)}</option>`,
+            )
+            .join("");
+        }
+        function render() {
+          const query = search.value.trim().toLocaleLowerCase();
+          const items = DESTINATION_CATALOG.filter(
+            (place) =>
+              window.twuIsDestinationVisible?.(place.place) !== false &&
+              (chosenState === "All states" || place.state === chosenState) &&
+              (chosenPlace === "All places" || place.place === chosenPlace) &&
+              (!query ||
+                `${place.place} ${place.state} ${place.description}`
+                  .toLocaleLowerCase()
+                  .includes(query)),
+          );
+          $("#destination-results-title").textContent =
+            chosenPlace !== "All places"
+              ? chosenPlace
+              : chosenState === "All states"
+                ? "All eight states"
+                : chosenState;
+          $("#destination-kicker").textContent =
+            chosenPlace !== "All places"
+              ? "YOUR NEXT STOP"
+              : chosenState === "All states"
+                ? `${items.length} CURATED DESTINATION IDEAS`
+                : `${chosenState.toUpperCase()} · FEATURED PLACES`;
+          $("#destination-count").textContent =
+            `${items.length} place${items.length === 1 ? "" : "s"}`;
+          $("#destination-results").innerHTML = items.length
+            ? items
+                .map((place, index) => {
+                  const query = new URLSearchParams({
+                    state: place.state,
+                    dest: place.place,
+                  });
+                  return `<article class="destination-card" style="--card-index:${index % 8}">
+            <div class="destination-card-image" style="background-image:url(&quot;${escapeHtml(imageFor(place))}&quot;)"><span>${escapeHtml(place.state)}</span></div>
+            <div class="destination-card-content"><p class="eyebrow">${escapeHtml(place.state)}</p><h3>${escapeHtml(place.place)}</h3><p>${escapeHtml(place.description)}</p>
+              <div class="destination-card-actions"><a class="btn sm" href="guides.html?${query.toString()}">Find a guide</a><a class="text-link" href="stays.html?${query.toString()}">Explore stays <span aria-hidden="true">↗</span></a></div>
+            </div>
+          </article>`;
+                })
+                .join("")
+            : `<div class="empty-state"><span>🧭</span><h2>No places matched those filters</h2><p>Try a different state or search term.</p></div>`;
+        }
+        stateSelect.innerHTML = ["All states", ...STATES]
+          .map(
+            (state) =>
+              `<option value="${escapeHtml(state)}"${state === chosenState ? " selected" : ""}>${escapeHtml(state)}</option>`,
+          )
+          .join("");
+        if (
+          chosenPlace !== "All places" &&
+          !DESTINATION_CATALOG.some(
+            (place) =>
+              window.twuIsDestinationVisible?.(place.place) !== false &&
+              place.place === chosenPlace &&
+              (chosenState === "All states" || place.state === chosenState),
+          )
+        ) {
+          const match = DESTINATION_CATALOG.find(
+            (place) =>
+              window.twuIsDestinationVisible?.(place.place) !== false &&
+              place.place === chosenPlace,
+          );
+          if (match) chosenState = match.state;
+        }
+        stateSelect.value = chosenState;
+        fillPlaces();
+        stateSelect.addEventListener("change", () => {
+          chosenState = stateSelect.value;
+          chosenPlace = "All places";
+          fillPlaces();
+          render();
+        });
+        placeSelect.addEventListener("change", () => {
+          chosenPlace = placeSelect.value;
+          render();
+        });
+        search.addEventListener("input", render);
+        $("#clear-destination-filters").addEventListener("click", () => {
+          chosenState = "All states";
+          chosenPlace = "All places";
+          search.value = "";
+          stateSelect.value = chosenState;
+          fillPlaces();
+          render();
+        });
+        render();
+      })();
+    </script>
+    <script src="motion.js" defer></script>
+  </body>
+</html>

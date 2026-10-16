@@ -1,0 +1,1454 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin dashboard · Trail With Us</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* ---------- Layout ---------- */
+      .dash {
+        max-width: 1220px;
+        margin: 0 auto;
+        padding: 32px 5vw 80px;
+      }
+      .dash-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 26px;
+        padding-bottom: 22px;
+        border-bottom: 3px dashed var(--n2);
+      }
+      .dash-head h1 {
+        font-size: clamp(2rem, 5vw, 3.3rem);
+        line-height: 1.05;
+      }
+      .dash-head p {
+        margin: 8px 0 2px;
+      }
+      .dash-head small {
+        opacity: 0.7;
+        overflow-wrap: anywhere;
+      }
+      .dash-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+        align-items: start;
+      }
+      .dash-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
+        gap: 22px;
+        align-items: start;
+      }
+
+      /* ---------- Top navigation ---------- */
+      .admin-shortcuts {
+        position: sticky;
+        top: 0;
+        z-index: 15;
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 6px;
+        scrollbar-width: thin;
+        padding: 10px;
+        background: #f7eac1;
+        border: 2px solid var(--n2);
+        border-radius: 16px;
+      }
+      .admin-shortcuts a {
+        flex: none;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 700;
+        border: 2px solid transparent;
+        transition:
+          background 0.15s,
+          transform 0.15s,
+          border-color 0.15s;
+      }
+      .admin-shortcuts a:hover {
+        background: #fff9e8;
+        transform: translateY(-1px);
+      }
+      .admin-shortcuts a.active {
+        background: var(--n0);
+        color: var(--cr);
+      }
+      .admin-shortcuts a:focus-visible,
+      .dash-back-icon:focus-visible {
+        outline: 3px solid var(--n0);
+        outline-offset: 2px;
+      }
+      .count {
+        min-width: 24px;
+        padding: 1px 8px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-align: center;
+        background: #fff9e8;
+        color: var(--n0);
+        border: 1.5px solid var(--n2);
+      }
+      .admin-shortcuts a.active .count {
+        background: var(--cr);
+      }
+
+      /* ---------- Panels ---------- */
+      .dash-panel {
+        scroll-margin-top: 20px;
+        background: #fff9e8;
+        border: 3px solid var(--n0);
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 5px 5px 0 var(--n2);
+        min-width: 0;
+        container-type: inline-size;
+      }
+      .dash-panel > h2 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.5rem;
+        margin-bottom: 6px;
+      }
+      .dash-panel > h2:before {
+        content: "";
+        flex: none;
+        width: 6px;
+        height: 22px;
+        background: var(--n2);
+        border-radius: 4px;
+      }
+      .panel-sub {
+        margin: 0 0 18px;
+        opacity: 0.8;
+        font-size: 0.95rem;
+        max-width: 70ch;
+      }
+      .dash-panel h3 {
+        font-size: 1.15rem;
+        margin: 26px 0 8px;
+        padding-top: 20px;
+        border-top: 2px dashed var(--n2);
+      }
+      .dash-panel h3 small {
+        font-weight: 400;
+        opacity: 0.7;
+        font-size: 0.8rem;
+      }
+
+      /* ---------- Forms ---------- */
+      .dash *,
+      .dash *:before,
+      .dash *:after {
+        box-sizing: border-box;
+      }
+      .add-box {
+        margin-bottom: 6px;
+      }
+      .add-box > summary {
+        list-style: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        font-weight: 800;
+        border: 2px solid var(--n0);
+        border-radius: 999px;
+        background: var(--n0);
+        color: var(--cr);
+        user-select: none;
+        transition: transform 0.15s;
+      }
+      .add-box > summary::-webkit-details-marker {
+        display: none;
+      }
+      .add-box > summary:before {
+        content: "+";
+        font-size: 1.2rem;
+        line-height: 1;
+      }
+      .add-box[open] > summary:before {
+        content: "\2212";
+      }
+      .add-box > summary:hover {
+        transform: translateY(-1px);
+      }
+      .add-box > summary:focus-visible {
+        outline: 3px solid var(--n2);
+        outline-offset: 2px;
+      }
+      .add-box > form {
+        margin-top: 12px;
+      }
+      .dash form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px 16px;
+        padding: 18px;
+        background: #f7eac1;
+        border: 2px solid var(--n2);
+        border-radius: 14px;
+        margin-bottom: 8px;
+      }
+      .dash form label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin: 0;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        min-width: 0;
+      }
+      @container (min-width: 560px) {
+        .dash form {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      .dash form .wide,
+      .dash form button[type="submit"],
+      .dash form > small {
+        grid-column: 1 / -1;
+      }
+      .dash form > small {
+        margin-top: -8px;
+        opacity: 0.7;
+      }
+      .dash form button[type="submit"] {
+        justify-self: start;
+      }
+      .dash input:not([type="checkbox"]),
+      .dash select,
+      .dash textarea {
+        width: 100%;
+        min-width: 0;
+        font: inherit;
+        font-weight: 400;
+        background: var(--cr);
+        border: 3px solid var(--n2);
+        border-radius: 12px;
+        padding: 10px 12px;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .dash textarea {
+        resize: vertical;
+        min-height: 84px;
+      }
+      .dash input:focus,
+      .dash select:focus,
+      .dash textarea:focus {
+        outline: none;
+        border-color: var(--n0);
+        box-shadow: 3px 3px 0 var(--n2);
+      }
+      .dash input[readonly] {
+        opacity: 0.65;
+        cursor: not-allowed;
+        border-style: dashed;
+      }
+      .dash .check-row {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start;
+        gap: 10px !important;
+        width: fit-content;
+        max-width: 100%;
+        cursor: pointer;
+        line-height: 1.35;
+      }
+      .dash .check-row input[type="checkbox"] {
+        appearance: auto;
+        -webkit-appearance: checkbox;
+        box-sizing: border-box;
+        width: 18px !important;
+        min-width: 18px !important;
+        max-width: 18px;
+        height: 18px;
+        min-height: 18px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        box-shadow: none;
+        accent-color: var(--n0);
+        flex: 0 0 18px;
+        cursor: pointer;
+      }
+
+      /* ---------- Records list ---------- */
+      #admin-packages,
+      #admin-places,
+      #admin-inventory,
+      #admin-discounts,
+      #admin-applications,
+      #admin-bookings {
+        margin-top: 14px;
+        max-height: 400px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+        padding: 2px 8px 6px 2px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--n2) transparent;
+        border-top: 2px dashed var(--n2);
+      }
+      #admin-packages::-webkit-scrollbar,
+      #admin-places::-webkit-scrollbar,
+      #admin-inventory::-webkit-scrollbar,
+      #admin-discounts::-webkit-scrollbar,
+      #admin-applications::-webkit-scrollbar,
+      #admin-bookings::-webkit-scrollbar {
+        width: 8px;
+      }
+      #admin-packages::-webkit-scrollbar-thumb,
+      #admin-places::-webkit-scrollbar-thumb,
+      #admin-inventory::-webkit-scrollbar-thumb,
+      #admin-discounts::-webkit-scrollbar-thumb,
+      #admin-applications::-webkit-scrollbar-thumb,
+      #admin-bookings::-webkit-scrollbar-thumb {
+        background: var(--n2);
+        border-radius: 8px;
+      }
+      .dash-item {
+        border: 2px solid var(--n2);
+        border-radius: 14px;
+        background: var(--cr);
+        padding: 14px 16px;
+        margin: 12px 4px 4px 0;
+        overflow-wrap: anywhere;
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s;
+      }
+      .dash-item:hover {
+        box-shadow: 3px 3px 0 var(--n2);
+      }
+      .dash-item h3 {
+        font-size: 1.1rem;
+        margin: 0 0 5px;
+        padding: 0;
+        border: 0;
+      }
+      .dash-item p {
+        margin: 5px 0;
+      }
+      .dash-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+      .dash-actions .btn {
+        white-space: normal;
+        padding: 8px 14px;
+        font-size: 0.9rem;
+      }
+      .gallery-cta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .gallery-cta .panel-sub {
+        margin: 0;
+        flex: 1 1 320px;
+      }
+      .duties {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+        gap: 12px;
+        counter-reset: duty;
+      }
+      .duties li {
+        counter-increment: duty;
+        position: relative;
+        padding: 14px 14px 14px 52px;
+        background: var(--cr);
+        border: 2px solid var(--n2);
+        border-radius: 12px;
+      }
+      .duties li:before {
+        content: counter(duty);
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--n0);
+        color: var(--cr);
+        font-weight: 800;
+        font-size: 0.85rem;
+      }
+
+      /* ---------- Notices & misc ---------- */
+      .notice {
+        padding: 12px 15px;
+        border-radius: 12px;
+        background: #fff0b8;
+        border: 2px solid var(--n2);
+        margin: 0 0 20px;
+        overflow-wrap: anywhere;
+        position: sticky;
+        top: 10px;
+        z-index: 20;
+        box-shadow: 3px 3px 0 var(--n2);
+      }
+      .notice-error {
+        background: #ffe5e6;
+        border-color: #8b2635;
+        color: #651c2a;
+      }
+      #notice.notice {
+        position: fixed !important;
+        top: 18px !important;
+        right: 18px !important;
+        left: auto !important;
+        bottom: auto !important;
+        z-index: 10050 !important;
+        width: min(420px, calc(100vw - 32px));
+        max-height: 40vh;
+        overflow: auto;
+        margin: 0 !important;
+        padding: 14px 18px;
+        border-radius: 14px;
+        box-shadow: 0 12px 40px rgba(4, 10, 40, .22);
+        animation: adminToastIn .24s cubic-bezier(.2,.8,.2,1) both;
+      }
+      #notice.notice:not(.notice-error) {
+        background: #eaf7ee;
+        color: #195a35;
+        border-color: #78b88e;
+      }
+      @keyframes adminToastIn {
+        from { opacity: 0; transform: translateY(-8px) scale(.985); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      .admin-modal button[type="submit"][disabled] {
+        opacity: .72;
+        cursor: wait;
+        pointer-events: none;
+      }
+      .admin-modal button[type="submit"].is-saving::before {
+        content: "";
+        display: inline-block;
+        width: 13px;
+        height: 13px;
+        margin-right: 8px;
+        vertical-align: -2px;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: adminSpin .7s linear infinite;
+      }
+      @keyframes adminSpin { to { transform: rotate(360deg); } }
+      .dash-back-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--n0);
+        text-decoration: none;
+        font-weight: 800;
+        border: 2px solid var(--n2);
+        border-radius: 999px;
+        padding: 8px 13px;
+        margin-bottom: 16px;
+        transition:
+          transform 0.18s,
+          background 0.18s;
+      }
+      .dash-back-icon:hover {
+        transform: translateX(-2px);
+        background: #fff9e8;
+      }
+      .dash-back-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+      .dash [hidden] {
+        display: none !important;
+      }
+
+      /* ---------- Search & modal interactions ---------- */
+      .sr-only {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        padding: 0 !important;
+        margin: -1px !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+        white-space: nowrap !important;
+        border: 0 !important;
+      }
+      .admin-search-toolbar {
+        display: grid;
+        grid-template-columns: minmax(220px, 0.85fr) minmax(260px, 1.15fr);
+        gap: 22px;
+        align-items: center;
+        margin: 0 0 22px;
+        padding: 16px 18px;
+        background: rgba(255, 249, 232, 0.95);
+        border: 2px solid var(--n2);
+        border-radius: 18px;
+        box-shadow: 4px 4px 0 var(--n2);
+      }
+      .admin-search-intro {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+      .admin-search-icon {
+        flex: none;
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: var(--n0);
+        color: var(--cr);
+        font-size: 2rem;
+        line-height: 1;
+      }
+      .admin-search-intro strong { display:block; font-size:1rem; }
+      .admin-search-intro p { margin: 3px 0 0; opacity:.7; font-size:.88rem; }
+      .admin-global-search-control,
+      .admin-search-wrap {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+      .admin-global-search-control.admin-search-wrap { margin: 0; }
+      .admin-global-search-control {
+        justify-self: end;
+        width: min(100%, 420px);
+        min-height: 44px;
+        transition: width .2s ease;
+      }
+      .admin-global-search-control.is-collapsed {
+        width: 44px;
+        min-width: 44px;
+        max-width: 44px;
+      }
+      .admin-global-search-control input,
+      .admin-search-wrap input {
+        flex: 1 1 auto;
+        min-width: 0;
+        width: 100%;
+        padding: 10px 12px;
+        border: 2px solid #c5c9d7;
+        border-radius: 12px;
+        background: #fffdf6;
+        color: var(--n0);
+        font: inherit;
+        outline: none;
+        transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+      }
+      .admin-global-search-control input:focus,
+      .admin-search-wrap input:focus {
+        border-color: var(--n0);
+        box-shadow: 0 0 0 4px rgba(34, 55, 111, .13);
+        background: #fff;
+      }
+      .admin-search-wrap {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        margin-top: 16px;
+        margin-bottom: 10px;
+      }
+      .admin-search-wrap.is-collapsed {
+        width: 44px;
+        min-width: 44px;
+        max-width: 44px;
+        margin-top: 14px;
+        margin-bottom: 10px;
+      }
+      .admin-global-search-control.admin-search-wrap.is-collapsed { margin: 0; }
+      .admin-global-search-control.is-collapsed .search-clear { display: none; }
+      .admin-global-search-control.is-collapsed input,
+      .admin-search-wrap.is-collapsed input,
+      .admin-search-wrap.is-collapsed .section-search-clear {
+        display: none;
+      }
+      .admin-search-toggle {
+        position: relative;
+        flex: 0 0 44px;
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 2px solid #c5c9d7;
+        border-radius: 12px;
+        background: #fffdf6;
+        color: var(--n0);
+        cursor: pointer;
+        transition: background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
+      }
+      .admin-search-wrap.has-value .admin-search-toggle::after {
+        content: "";
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #e0a52b;
+        border: 1px solid currentColor;
+      }
+      .admin-search-toggle svg {
+        width: 20px;
+        height: 20px;
+        display: block;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+      .admin-search-toggle:hover,
+      .admin-search-wrap:not(.is-collapsed) .admin-search-toggle,
+      .admin-global-search-control:not(.is-collapsed) .admin-search-toggle {
+        background: var(--n0);
+        color: var(--cr);
+        border-color: var(--n0);
+      }
+      .admin-search-toggle:focus-visible {
+        outline: 3px solid #8498e8;
+        outline-offset: 2px;
+      }
+      .search-clear {
+        flex: none;
+        border: 1px solid #c5c9d7;
+        border-radius: 10px;
+        padding: 8px 11px;
+        background: #fffdf6;
+        color: var(--n0);
+        font: inherit;
+        font-size: .85rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .search-clear:hover { background: var(--n0); color: var(--cr); }
+      .admin-search-wrap .section-search-clear {
+        position: static;
+        padding: 6px 9px;
+        line-height: 1.1;
+      }
+      .search-empty {
+        margin: 10px 0 14px;
+        padding: 12px 14px;
+        color: #59627d;
+        background: #f0f1f6;
+        border: 1px dashed #aeb4c5;
+        border-radius: 12px;
+        font-size: .92rem;
+      }
+      .dash-item[hidden] { display:none !important; }
+
+      .modal-feedback {
+        margin: 14px 24px 0;
+        padding: 11px 13px;
+        border: 1px solid #b5d8bf;
+        border-radius: 11px;
+        background: #eaf7ee;
+        color: #195a35;
+        font-size: .9rem;
+        overflow-wrap: anywhere;
+      }
+      .modal-feedback.error {
+        border-color: #e6a8ae;
+        background: #fff0f1;
+        color: #8b2635;
+      }
+      .admin-add-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 10px 0 6px;
+        padding: 10px 16px;
+        border: 2px solid var(--n0);
+        border-radius: 12px;
+        background: var(--n0);
+        color: var(--cr);
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 3px 3px 0 var(--n2);
+        transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      }
+      .admin-add-btn > span { font-size: 1.25rem; line-height: .8; }
+      .admin-add-btn:hover { transform: translateY(-2px); box-shadow: 4px 5px 0 var(--n2); }
+      .admin-add-btn:active { transform: translateY(0); box-shadow: 1px 1px 0 var(--n2); }
+      .admin-add-btn:focus-visible,
+      .modal-close:focus-visible,
+      [data-close-dialog]:focus-visible {
+        outline: 3px solid #8498e8;
+        outline-offset: 3px;
+      }
+      .admin-modal {
+        position: fixed !important;
+        inset: 50% auto auto 50% !important;
+        transform: translate(-50%, -50%);
+        margin: 0 !important;
+        color: var(--n0);
+        width: min(760px, calc(100vw - 28px));
+        max-width: 760px;
+        max-height: min(90dvh, 900px);
+        padding: 0;
+        border: 2px solid rgba(6, 13, 61, .9);
+        border-radius: 22px;
+        background: #fff9e8;
+        box-shadow: 0 28px 90px rgba(0, 0, 0, .28);
+        overflow: auto;
+      }
+      .admin-modal::backdrop {
+        background: rgba(4, 10, 40, .68);
+        backdrop-filter: blur(7px);
+        animation: adminBackdropIn .18s ease both;
+      }
+      .admin-modal[open] { animation: adminModalIn .22s cubic-bezier(.2,.8,.2,1) both; }
+      .admin-modal:focus { outline: none; }
+      .admin-modal-head {
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap:16px;
+        padding: 22px 24px 16px;
+        background: linear-gradient(125deg, #fff1c7, #fff9e8);
+        border-bottom: 1px solid #e2d7b7;
+      }
+      .admin-modal-head h2 {
+        margin: 4px 0 6px;
+        font-size: clamp(1.35rem, 3vw, 1.8rem);
+        line-height: 1.1;
+      }
+      .admin-modal-head p { margin:0; color:#626980; font-size:.9rem; }
+      .admin-modal-head .modal-eyebrow {
+        font-size:.7rem;
+        letter-spacing:.14em;
+        font-weight:800;
+        color:#69718c;
+      }
+      .modal-close {
+        flex:none;
+        display:grid;
+        place-items:center;
+        width:36px;
+        height:36px;
+        border:1px solid #d8d3c3;
+        border-radius:50%;
+        color:var(--n0);
+        background:#fffdf6;
+        font-size:1.55rem;
+        line-height:1;
+        cursor:pointer;
+        transition: transform .18s ease, background .18s ease;
+      }
+      .modal-close:hover { transform:rotate(90deg); background:#f1e4bf; }
+      .admin-modal form {
+        margin:0 !important;
+        padding: 22px 24px 24px !important;
+        background:transparent !important;
+        border:0 !important;
+        border-radius:0 !important;
+      }
+      .admin-modal form .modal-actions {
+        grid-column:1 / -1;
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:flex-end;
+        align-items:center;
+        gap:10px;
+        margin-top: 4px;
+        padding-top:16px;
+        border-top:1px solid #e2d7b7;
+      }
+      .admin-modal form .modal-actions button { margin:0; }
+      .admin-modal form .modal-actions button[type="submit"] { grid-column:auto; }
+      @keyframes adminModalIn {
+        from { opacity:0; transform:translate(-50%, calc(-50% + 12px)) scale(.985); }
+        to { opacity:1; transform:translate(-50%, -50%) scale(1); }
+      }
+      @keyframes adminBackdropIn {
+        from { opacity:0; }
+        to { opacity:1; }
+      }
+
+            /* ---------- Responsive ---------- */
+      @media (max-width: 900px) {
+        .dash-layout {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 18px;
+        }
+      }
+      @media (max-width: 640px) {
+        .dash {
+          padding: 22px 14px 50px;
+        }
+        .dash-panel {
+          padding: 16px;
+        }
+        .dash form {
+          padding: 14px;
+        }
+        .dash-head .btn {
+          width: 100%;
+        }
+      }
+      @media (max-width: 760px) {
+        .admin-search-toolbar { grid-template-columns: minmax(0, 1fr); gap: 14px; padding: 14px; }
+        .admin-search-icon { width: 38px; height: 38px; border-radius: 12px; }
+        .admin-global-search-control { width: 100%; margin: 0; }
+        .admin-global-search-control.is-collapsed { width: 44px; min-width: 44px; max-width: 44px; }
+        .admin-modal { width: calc(100vw - 18px); max-height: 94dvh; border-radius: 17px; }
+        .admin-modal-head { padding: 18px 17px 14px; }
+        .modal-feedback { margin: 12px 17px 0; }
+        .admin-modal form { padding: 16px 17px 18px !important; }
+        .admin-modal form .modal-actions { justify-content:stretch; }
+        .admin-modal form .modal-actions button { flex:1 1 120px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body data-role="admin">
+    <main class="dash">
+      <div class="dash-head">
+        <div>
+          <a
+            class="dash-back-icon"
+            href="index.html"
+            aria-label="Back to website"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" /></svg
+            ><span>Back to website</span></a
+          ><br /><a class="logo" href="index.html">Trail With Us</a>
+          <h1 style="margin-top: 18px">Admin workspace</h1>
+          <p id="welcome">Loading your workspace…</p>
+          <small id="account-email"></small>
+        </div>
+        <button class="btn" id="signout">Sign out</button>
+      </div>
+      <p id="notice" class="notice" role="status" hidden></p>
+      <section class="admin-search-toolbar" aria-label="Search admin records">
+        <div class="admin-search-intro">
+          <span class="admin-search-icon" aria-hidden="true">⌕</span>
+          <div><strong>Quick search</strong><p>Find packages, places, listings, discount codes, applications or trip requests.</p></div>
+        </div>
+        <div class="admin-global-search-control admin-search-wrap is-collapsed" data-collapsible-search>
+          <button class="admin-search-toggle" type="button" aria-label="Open global search" aria-expanded="false" title="Search all records">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+          </button>
+          <label class="sr-only" for="admin-global-search">Search all admin records</label>
+          <input id="admin-global-search" type="search" autocomplete="off" placeholder="Search everything…" />
+          <button id="admin-global-search-clear" type="button" class="search-clear" hidden aria-label="Clear global search">×</button>
+        </div>
+      </section>
+      <div class="dash-layout">
+        <nav class="admin-shortcuts" aria-label="Admin sections">
+          <a href="#packages-panel">Packages <span class="count" data-count="admin-packages" hidden></span></a>
+          <a href="#places-panel">Places <span class="count" data-count="admin-places" hidden></span></a>
+          <a href="#inventory-panel">Stays, rides &amp; gear <span class="count" data-count="admin-inventory" hidden></span></a>
+          <a href="#discounts-panel">Discount codes <span class="count" data-count="admin-discounts" hidden></span></a>
+          <a href="#applications-panel">Guide applications <span class="count" data-count="admin-applications" hidden></span></a>
+          <a href="#bookings-panel">Trip requests <span class="count" data-count="admin-bookings" hidden></span></a>
+          <a href="#gallery-panel">Gallery</a>
+        </nav>
+      <div class="dash-grid">
+        <section class="dash-panel" id="packages-panel">
+          <h2>Manage packages</h2>
+          <p class="panel-sub">Create tour packages, set pricing and discounts, and choose what is live on the site.</p>
+          <button class="admin-add-btn" type="button" data-open-dialog="package-dialog"><span aria-hidden="true">＋</span> Add package</button><dialog class="admin-modal" id="package-dialog" aria-labelledby="package-modal-title"><div class="admin-modal-head"><div><p class="modal-eyebrow">ADMIN WORKSPACE</p><h2 id="package-modal-title">Create a package</h2><p>Set the itinerary, pricing and publication status.</p></div><button class="modal-close" type="button" data-close-dialog aria-label="Close dialog">×</button></div><p class="modal-feedback" role="status" hidden></p><form id="package-form">
+            <label>Package title<input id="package-title" required /></label
+            ><label
+              >Price per traveller (INR)<input
+                id="package-price"
+                type="number"
+                min="0"
+                step="1"
+                required /></label
+            ><label
+              >Duration (days)<input
+                id="package-days"
+                type="number"
+                min="1"
+                max="90"
+                step="1"
+                value="1"
+                required /></label
+            ><label
+              >Image URL (optional)<input
+                id="package-image"
+                type="text"
+                placeholder="https://… or assets/valley.jpg" /></label
+            ><label
+              >Discount percentage<input
+                id="package-discount"
+                type="number"
+                min="0"
+                max="100"
+                value="0" /></label
+            ><label class="wide">Description<textarea
+                id="package-description"
+                rows="3"
+                required
+              ></textarea></label
+            ><label class="check-row wide"><input
+                id="package-published"
+                type="checkbox"
+                
+              />
+              Publish immediately</label
+            ><div class="modal-actions"><button class="btn alt modal-cancel" type="button" data-close-dialog>Cancel</button><button class="btn" type="submit">Save package</button></div>
+          </form></dialog>
+          <div class="admin-search-wrap is-collapsed" data-collapsible-search>
+            <button class="admin-search-toggle" type="button" aria-label="Open search for packages" aria-expanded="false" title="Search packages">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+            </button>
+            <label class="sr-only" for="search-admin-packages">Search packages</label>
+            <input type="search" class="admin-section-search" data-search-target="admin-packages" aria-label="Search packages" placeholder="Search packages by title, price or description" autocomplete="off" id="search-admin-packages" />
+            <button class="search-clear section-search-clear" type="button" data-clear-search="admin-packages" aria-label="Clear search" hidden>×</button>
+          </div>
+          <p class="search-empty" data-search-empty="admin-packages" role="status" hidden>No matching records.</p>
+          <div id="admin-packages"></div>
+        </section>
+        <section class="dash-panel" id="places-panel">
+          <h2>Manage places</h2>
+          <p class="panel-sub">Add destinations across the North-East and publish them when ready.</p>
+          <button class="admin-add-btn" type="button" data-open-dialog="place-dialog"><span aria-hidden="true">＋</span> Add place</button><dialog class="admin-modal" id="place-dialog" aria-labelledby="place-modal-title"><div class="admin-modal-head"><div><p class="modal-eyebrow">ADMIN WORKSPACE</p><h2 id="place-modal-title">Add a destination</h2><p>Add a place to the Northeast destination catalogue.</p></div><button class="modal-close" type="button" data-close-dialog aria-label="Close dialog">×</button></div><p class="modal-feedback" role="status" hidden></p><form id="place-form">
+            <label>Place name<input id="place-name" required /></label
+            ><label
+              >State<select id="place-state" required>
+                <option>Arunachal Pradesh</option>
+                <option>Assam</option>
+                <option>Manipur</option>
+                <option>Meghalaya</option>
+                <option>Mizoram</option>
+                <option>Nagaland</option>
+                <option>Sikkim</option>
+                <option>Tripura</option>
+              </select></label
+            ><label class="wide">Description<textarea
+                id="place-description"
+                rows="3"
+                required
+              ></textarea></label
+            ><label class="check-row wide"><input
+                id="place-published"
+                type="checkbox"
+                
+              />
+              Publish immediately</label
+            ><div class="modal-actions"><button class="btn alt modal-cancel" type="button" data-close-dialog>Cancel</button><button class="btn" type="submit">Save destination</button></div>
+          </form></dialog>
+          <div class="admin-search-wrap is-collapsed" data-collapsible-search>
+            <button class="admin-search-toggle" type="button" aria-label="Open search for destinations" aria-expanded="false" title="Search destinations">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+            </button>
+            <label class="sr-only" for="search-admin-places">Search destinations</label>
+            <input type="search" class="admin-section-search" data-search-target="admin-places" aria-label="Search destinations" placeholder="Search destinations by name, state or description" autocomplete="off" id="search-admin-places" />
+            <button class="search-clear section-search-clear" type="button" data-clear-search="admin-places" aria-label="Clear search" hidden>×</button>
+          </div>
+          <p class="search-empty" data-search-empty="admin-places" role="status" hidden>No matching records.</p>
+          <div id="admin-places"></div>
+        </section>
+        <section class="dash-panel" id="inventory-panel">
+          <h2>Stays, rides & gear</h2>
+          <p class="panel-sub">
+            These records power the public Stays, Rides and Gear pages. Only
+            publish verified providers/rates; unpublished draft records stay
+            private to admins.
+          </p>
+          <button class="admin-add-btn" type="button" data-open-dialog="inventory-dialog"><span aria-hidden="true">＋</span> Add listing</button><dialog class="admin-modal" id="inventory-dialog" aria-labelledby="inventory-modal-title"><div class="admin-modal-head"><div><p class="modal-eyebrow">ADMIN WORKSPACE</p><h2 id="inventory-modal-title">Add inventory listing</h2><p>Create a stay, transport rate or gear-rental listing.</p></div><button class="modal-close" type="button" data-close-dialog aria-label="Close dialog">×</button></div><p class="modal-feedback" role="status" hidden></p><form id="inventory-form">
+            <label
+              >Type<select id="inventory-type" required>
+                <option value="stay">Stay / accommodation</option>
+                <option value="ride">Ride / transport rate</option>
+                <option value="gear">Gear rental</option>
+              </select></label
+            ><label
+              >Name<input
+                id="inventory-title"
+                required
+                maxlength="120" /></label
+            ><label
+              >Price (INR)<input
+                id="inventory-price"
+                type="number"
+                min="0"
+                step="0.01"
+                required /></label
+            ><label
+              >Price unit<input
+                id="inventory-unit"
+                required
+                value="per_room_night"
+                readonly
+                aria-describedby="inventory-unit-help"
+                maxlength="40" /></label
+            ><small id="inventory-unit-help"
+              >Automatically set by the listing type: room-night, kilometre or
+              item-day.</small
+            ><label
+              >Capacity / seats per vehicle (optional)<input
+                id="inventory-capacity"
+                type="number"
+                min="1"
+                step="1"
+                placeholder="1, 4, 6 or blank" /></label
+            ><label
+              >State<select id="inventory-state">
+                <option>All states</option>
+                <option>Arunachal Pradesh</option>
+                <option>Assam</option>
+                <option>Manipur</option>
+                <option>Meghalaya</option>
+                <option>Mizoram</option>
+                <option>Nagaland</option>
+                <option>Sikkim</option>
+                <option>Tripura</option>
+              </select></label
+            ><label
+              >Place / destination<input
+                id="inventory-destination"
+                value="Everywhere"
+                maxlength="140" /></label
+            ><label
+              >Emoji / icon<input
+                id="inventory-emoji"
+                value="🧭"
+                maxlength="16" /></label
+            ><label
+              >Image URL (optional)<input
+                id="inventory-image"
+                placeholder="assets/valley.jpg or https://…" /></label
+            ><label class="wide">Description<textarea
+                id="inventory-description"
+                rows="3"
+              ></textarea></label
+            ><label class="check-row wide"><input
+                id="inventory-published"
+                type="checkbox"
+                
+              />
+              Publish after verifying this provider and rate</label
+            ><div class="modal-actions"><button class="btn alt modal-cancel" type="button" data-close-dialog>Cancel</button><button class="btn" type="submit">Save listing</button></div>
+          </form></dialog>
+          <h3>
+            Current inventory
+            <small>(drafts stay private until published)</small>
+          </h3>
+          <div class="admin-search-wrap is-collapsed" data-collapsible-search>
+            <button class="admin-search-toggle" type="button" aria-label="Open search for stays, rides and gear" aria-expanded="false" title="Search stays, rides and gear">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+            </button>
+            <label class="sr-only" for="search-admin-inventory">Search stays, rides and gear</label>
+            <input type="search" class="admin-section-search" data-search-target="admin-inventory" aria-label="Search stays, rides and gear" placeholder="Search stays, rides and gear" autocomplete="off" id="search-admin-inventory" />
+            <button class="search-clear section-search-clear" type="button" data-clear-search="admin-inventory" aria-label="Clear search" hidden>×</button>
+          </div>
+          <p class="search-empty" data-search-empty="admin-inventory" role="status" hidden>No matching records.</p>
+          <div id="admin-inventory">Loading shared inventory…</div>
+        </section>
+        <section class="dash-panel" id="discounts-panel">
+          <h2>Discount codes</h2>
+          <p class="panel-sub">Create promo codes with optional validity windows and redemption caps.</p>
+          <button class="admin-add-btn" type="button" data-open-dialog="discount-dialog"><span aria-hidden="true">＋</span> Create discount code</button><dialog class="admin-modal" id="discount-dialog" aria-labelledby="discount-modal-title"><div class="admin-modal-head"><div><p class="modal-eyebrow">ADMIN WORKSPACE</p><h2 id="discount-modal-title">Create a discount code</h2><p>Set the percentage, validity window and redemption limit.</p></div><button class="modal-close" type="button" data-close-dialog aria-label="Close dialog">×</button></div><p class="modal-feedback" role="status" hidden></p><form id="discount-form">
+            <label
+              >Code<input
+                id="discount-code"
+                required
+                pattern="[A-Za-z0-9_-]+" /></label
+            ><label
+              >Percent off<input
+                id="discount-percent"
+                type="number"
+                min="1"
+                max="100"
+                required /></label
+            ><label
+              >Starts at (optional)<input
+                id="discount-start"
+                type="datetime-local" /></label
+            ><label
+              >Ends at (optional)<input
+                id="discount-end"
+                type="datetime-local" /></label
+            ><label
+              >Maximum redemptions (optional)<input
+                id="discount-max"
+                type="number"
+                min="1"
+                step="1"
+                placeholder="Unlimited" /></label
+            ><div class="modal-actions"><button class="btn alt modal-cancel" type="button" data-close-dialog>Cancel</button><button class="btn" type="submit">Create discount</button></div>
+          </form></dialog>
+          <h3>Existing discount codes</h3>
+          <div class="admin-search-wrap is-collapsed" data-collapsible-search>
+            <button class="admin-search-toggle" type="button" aria-label="Open search for discount codes" aria-expanded="false" title="Search discount codes">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+            </button>
+            <label class="sr-only" for="search-admin-discounts">Search discount codes</label>
+            <input type="search" class="admin-section-search" data-search-target="admin-discounts" aria-label="Search discount codes" placeholder="Search discount codes or status" autocomplete="off" id="search-admin-discounts" />
+            <button class="search-clear section-search-clear" type="button" data-clear-search="admin-discounts" aria-label="Clear search" hidden>×</button>
+          </div>
+          <p class="search-empty" data-search-empty="admin-discounts" role="status" hidden>No matching records.</p>
+          <div id="admin-discounts">Loading discount codes…</div>
+          <p class="panel-sub" style="margin-top: 18px">
+            Codes are validated at checkout and catalogue prices are
+            recalculated server-side. The request stays pending until an
+            operator confirms availability. Connect a payment provider before
+            taking online payments.
+          </p>
+        </section>
+        <section class="dash-panel" id="applications-panel">
+          <h2>Guide applications</h2>
+          <p class="panel-sub">Review identity, permits and safety qualifications before approving guides.</p>
+          <div class="admin-search-wrap is-collapsed" data-collapsible-search>
+            <button class="admin-search-toggle" type="button" aria-label="Open search for guide applications" aria-expanded="false" title="Search guide applications">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+            </button>
+            <label class="sr-only" for="search-admin-applications">Search guide applications</label>
+            <input type="search" class="admin-section-search" data-search-target="admin-applications" aria-label="Search guide applications" placeholder="Search guide applicants or status" autocomplete="off" id="search-admin-applications" />
+            <button class="search-clear section-search-clear" type="button" data-clear-search="admin-applications" aria-label="Clear search" hidden>×</button>
+          </div>
+          <p class="search-empty" data-search-empty="admin-applications" role="status" hidden>No matching records.</p>
+          <div id="admin-applications">Loading applications…</div>
+        </section>
+        <section class="dash-panel" id="bookings-panel">
+          <h2>Recent trip requests</h2>
+          <p class="panel-sub">Pending requests stay open until an operator confirms availability.</p>
+          <div class="admin-search-wrap is-collapsed" data-collapsible-search>
+            <button class="admin-search-toggle" type="button" aria-label="Open search for trip requests" aria-expanded="false" title="Search trip requests">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+            </button>
+            <label class="sr-only" for="search-admin-bookings">Search trip requests</label>
+            <input type="search" class="admin-section-search" data-search-target="admin-bookings" aria-label="Search trip requests" placeholder="Search trip requests by ID, status or date" autocomplete="off" id="search-admin-bookings" />
+            <button class="search-clear section-search-clear" type="button" data-clear-search="admin-bookings" aria-label="Clear search" hidden>×</button>
+          </div>
+          <p class="search-empty" data-search-empty="admin-bookings" role="status" hidden>No matching records.</p>
+          <div id="admin-bookings">Loading bookings…</div>
+        </section>
+        <section class="dash-panel" id="gallery-panel">
+          <h2>Gallery management</h2>
+          <div class="gallery-cta">
+          <p class="panel-sub">
+            Edit or hide built-in gallery memories, update captions and
+            locations, upload replacement photos, or publish new shared photos
+            for every visitor.
+          </p>
+          <a class="btn" href="gallery.html?manage=1">Open gallery manager</a>
+          </div>
+        </section>
+        <section class="dash-panel">
+          <h2>Admin responsibilities</h2>
+          <ul class="duties">
+            <li>
+              Review guide identity, permits, references and safety
+              qualifications.
+            </li>
+            <li>Moderate reported photos, reviews and user accounts.</li>
+            <li>
+              Manage cancellations, refunds, disputes and support requests.
+            </li>
+            <li>Keep package pricing, capacity and availability accurate.</li>
+            <li>Never expose private verification documents publicly.</li>
+          </ul>
+        </section>
+      </div>
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="dashboard.js"></script>
+    <script>
+      (function () {
+        var links = document.querySelectorAll(".admin-shortcuts a");
+        var map = {};
+        links.forEach(function (a) {
+          map[a.getAttribute("href").slice(1)] = a;
+        });
+        if ("IntersectionObserver" in window) {
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (en) {
+                if (en.isIntersecting) {
+                  links.forEach(function (l) { l.classList.remove("active"); });
+                  var a = map[en.target.id];
+                  if (a) a.classList.add("active");
+                }
+              });
+            },
+            { rootMargin: "-20% 0px -65% 0px" }
+          );
+          Object.keys(map).forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) io.observe(el);
+          });
+        }
+        function updateCount(id) {
+          var host = document.getElementById(id);
+          var badge = document.querySelector('[data-count="' + id + '"]');
+          if (!host || !badge) return;
+          var n = host.querySelectorAll(".dash-item").length;
+          badge.textContent = n;
+          badge.hidden = !n;
+        }
+        document.querySelectorAll("[data-count]").forEach(function (b) {
+          var id = b.getAttribute("data-count");
+          var host = document.getElementById(id);
+          if (!host) return;
+          new MutationObserver(function () { updateCount(id); }).observe(host, { childList: true, subtree: true });
+          updateCount(id);
+        });
+      })();
+    </script>
+    <script>
+      (function () {
+        "use strict";
+        const dialogs = Array.from(document.querySelectorAll(".admin-modal"));
+        const notice = document.getElementById("notice");
+        let pendingSave = null;
+        let toastTimer = null;
+        let lastToastSignature = "";
+
+        function closeDialog(dialog) {
+          if (!dialog) return;
+          if (typeof dialog.close === "function") dialog.close();
+          else dialog.removeAttribute("open");
+        }
+        function collapseSearch(wrapper) {
+          if (!wrapper) return;
+          wrapper.classList.add("is-collapsed");
+          const toggle = wrapper.querySelector(".admin-search-toggle");
+          if (toggle) toggle.setAttribute("aria-expanded", "false");
+        }
+        function expandSearch(wrapper) {
+          if (!wrapper) return;
+          wrapper.classList.remove("is-collapsed");
+          const toggle = wrapper.querySelector(".admin-search-toggle");
+          if (toggle) toggle.setAttribute("aria-expanded", "true");
+          const input = wrapper.querySelector('input[type="search"]');
+          window.setTimeout(() => input?.focus({ preventScroll: true }), 40);
+        }
+        document.querySelectorAll("[data-collapsible-search]").forEach((wrapper) => {
+          const toggle = wrapper.querySelector(".admin-search-toggle");
+          const input = wrapper.querySelector('input[type="search"]');
+          if (!toggle || !input) return;
+          const updateValueState = () => wrapper.classList.toggle("has-value", Boolean(input.value.trim()));
+          toggle.addEventListener("click", () => {
+            if (wrapper.classList.contains("is-collapsed")) expandSearch(wrapper);
+            else collapseSearch(wrapper);
+          });
+          input.addEventListener("input", updateValueState);
+          updateValueState();
+        });
+
+        document.querySelectorAll("[data-open-dialog]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const dialog = document.getElementById(button.dataset.openDialog);
+            if (!dialog) return;
+            if (typeof dialog.showModal === "function") dialog.showModal();
+            else dialog.setAttribute("open", "");
+            const feedback = dialog.querySelector(".modal-feedback");
+            if (feedback) { feedback.hidden = true; feedback.textContent = ""; feedback.classList.remove("error"); }
+            const submit = dialog.querySelector('button[type="submit"]');
+            if (submit && !pendingSave) {
+              submit.disabled = false;
+              submit.classList.remove("is-saving");
+              if (submit.dataset.originalText) submit.textContent = submit.dataset.originalText;
+            }
+            const firstField = dialog.querySelector("input:not([type=checkbox]), select, textarea");
+            window.setTimeout(() => firstField?.focus({ preventScroll: true }), 50);
+          });
+        });
+
+        document.querySelectorAll("[data-close-dialog]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const dialog = button.closest("dialog");
+            if (!dialog || (pendingSave && pendingSave.dialog === dialog)) return;
+            const form = dialog.querySelector("form");
+            if (form && button.classList.contains("modal-cancel")) form.reset();
+            closeDialog(dialog);
+          });
+        });
+        dialogs.forEach((dialog) => {
+          dialog.addEventListener("click", (event) => {
+            if (event.target === dialog && !(pendingSave && pendingSave.dialog === dialog)) closeDialog(dialog);
+          });
+          dialog.addEventListener("cancel", (event) => {
+            if (pendingSave && pendingSave.dialog === dialog) event.preventDefault();
+          });
+          const form = dialog.querySelector("form");
+          if (!form) return;
+          form.addEventListener("submit", (event) => {
+            if (pendingSave) {
+              event.preventDefault();
+              event.stopImmediatePropagation();
+              return;
+            }
+            if (typeof form.onsubmit !== "function") {
+              event.preventDefault();
+              event.stopImmediatePropagation();
+              showToast("The admin data is still loading. Wait a moment and try again.", true);
+              return;
+            }
+            const submit = form.querySelector('button[type="submit"]');
+            if (!submit) return;
+            const label = submit.dataset.originalText || submit.textContent.trim();
+            submit.dataset.originalText = label;
+            submit.disabled = true;
+            submit.classList.add("is-saving");
+            submit.textContent = "Saving…";
+            dialog.querySelectorAll("[data-close-dialog]").forEach((button) => { button.disabled = true; });
+            pendingSave = { form, dialog, submit, label, startedAt: Date.now() };
+          }, true);
+        });
+
+        function showToast(message, isError) {
+          if (!notice) return;
+          notice.textContent = message || (isError ? "The save failed. Please try again." : "Saved successfully.");
+          notice.classList.toggle("notice-error", Boolean(isError));
+          notice.hidden = false;
+          if (toastTimer) window.clearTimeout(toastTimer);
+          toastTimer = window.setTimeout(() => { notice.hidden = true; }, 5500);
+        }
+        function finishPendingSave() {
+          if (!pendingSave || !notice || notice.hidden) return;
+          const message = notice.textContent.trim();
+          if (!message) return;
+          const failed = notice.classList.contains("notice-error");
+          const pending = pendingSave;
+          pendingSave = null;
+          pending.submit.disabled = false;
+          pending.submit.classList.remove("is-saving");
+          pending.submit.textContent = pending.label;
+          pending.dialog.querySelectorAll("[data-close-dialog]").forEach((button) => { button.disabled = false; });
+          closeDialog(pending.dialog);
+          showToast(message, failed);
+        }
+        if (notice && typeof MutationObserver !== "undefined") {
+          const noticeObserver = new MutationObserver(() => {
+            if (!notice.hidden && notice.textContent.trim()) {
+              finishPendingSave();
+              const signature = notice.textContent + "|" + notice.className;
+              if (signature !== lastToastSignature) {
+                lastToastSignature = signature;
+                if (toastTimer) window.clearTimeout(toastTimer);
+                toastTimer = window.setTimeout(() => { notice.hidden = true; }, 5500);
+              }
+            }
+          });
+          noticeObserver.observe(notice, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["hidden", "class"] });
+        }
+
+        const targets = [
+          "admin-packages", "admin-places", "admin-inventory",
+          "admin-discounts", "admin-applications", "admin-bookings"
+        ];
+        const globalSearch = document.getElementById("admin-global-search");
+        const globalClear = document.getElementById("admin-global-search-clear");
+
+        function clean(value) { return String(value || "").trim().toLocaleLowerCase(); }
+        function applyFilters() {
+          const globalTerm = clean(globalSearch?.value);
+          if (globalClear) globalClear.hidden = !globalTerm;
+          targets.forEach((id) => {
+            const container = document.getElementById(id);
+            const localInput = document.querySelector('[data-search-target="' + id + '"]');
+            const localClear = document.querySelector('[data-clear-search="' + id + '"]');
+            const empty = document.querySelector('[data-search-empty="' + id + '"]');
+            if (!container) return;
+            const localTerm = clean(localInput?.value);
+            if (localClear) localClear.hidden = !localTerm;
+            const cards = Array.from(container.querySelectorAll(".dash-item"));
+            let visible = 0;
+            cards.forEach((card) => {
+              const text = clean(card.textContent);
+              const matches = (!globalTerm || text.includes(globalTerm)) &&
+                (!localTerm || text.includes(localTerm));
+              card.hidden = !matches;
+              if (matches) visible += 1;
+            });
+            if (empty) {
+              empty.hidden = !(cards.length && visible === 0 && (globalTerm || localTerm));
+              empty.textContent = globalTerm || localTerm
+                ? "No matching records. Try a different keyword or clear the search."
+                : "No records yet.";
+            }
+          });
+        }
+        globalSearch?.addEventListener("input", applyFilters);
+        globalClear?.addEventListener("click", () => {
+          globalSearch.value = "";
+          globalSearch.dispatchEvent(new Event("input", { bubbles: true }));
+          collapseSearch(globalSearch.closest("[data-collapsible-search]"));
+          applyFilters();
+        });
+        document.querySelectorAll("[data-search-target]").forEach((input) => {
+          input.addEventListener("input", applyFilters);
+        });
+        document.querySelectorAll("[data-clear-search]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const input = document.querySelector('[data-search-target="' + button.dataset.clearSearch + '"]');
+            if (input) {
+              input.value = "";
+              input.dispatchEvent(new Event("input", { bubbles: true }));
+              input.focus();
+            }
+            applyFilters();
+          });
+        });
+        targets.forEach((id) => {
+          const container = document.getElementById(id);
+          if (!container || typeof MutationObserver === "undefined") return;
+          new MutationObserver(applyFilters).observe(container, { childList: true, subtree: true, characterData: true });
+        });
+        applyFilters();
+      })();
+    </script>
+    <script src="motion.js" defer></script>
+  </body>
+</html> 

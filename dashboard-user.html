@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Traveller dashboard · Trail With Us</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .dash {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 36px 5vw 70px;
+      }
+      .dash-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+      }
+      .dash-head h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+      }
+      .dash-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+        gap: 22px;
+      }
+      .dash-panel {
+        background: #fff9e8;
+        border: 3px solid var(--n0);
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: 5px 5px 0 var(--n2);
+        min-width: 0;
+      }
+      .dash-panel h2 {
+        font-size: 1.45rem;
+        margin-bottom: 14px;
+      }
+      .dash-item {
+        border-top: 1px solid #b7b9c7;
+        padding: 14px 0;
+        overflow-wrap: anywhere;
+      }
+      .dash-item h3 {
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+      }
+      .dash-item p {
+        margin: 5px 0;
+      }
+      .dash form label {
+        margin: 10px 0;
+      }
+      .dash input,
+      .dash textarea {
+        width: 100%;
+        min-width: 0;
+      }
+      .dash textarea {
+        background: var(--cr);
+        border: 3px solid var(--n2);
+        border-radius: 12px;
+        padding: 10px;
+        font: inherit;
+      }
+      .dash-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .dash-actions .btn {
+        white-space: normal;
+      }
+      .notice {
+        padding: 12px 15px;
+        border-radius: 12px;
+        background: #fff0b8;
+        border: 2px solid var(--n2);
+        margin: 0 0 20px;
+        overflow-wrap: anywhere;
+      }
+      .notice-error {
+        background: #ffe5e6;
+        border-color: #8b2635;
+        color: #651c2a;
+      }
+      .dash [hidden] {
+        display: none !important;
+      }
+      @media (max-width: 560px) {
+        .dash {
+          padding: 24px 16px 50px;
+        }
+        .dash-panel {
+          padding: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body data-role="user">
+    <main class="dash">
+      <div class="dash-head">
+        <div>
+          <a class="logo" href="index.html">Trail With Us</a>
+          <h1 style="margin-top: 22px">Your travel dashboard</h1>
+          <p id="welcome">Loading your workspace…</p>
+          <small id="account-email"></small>
+        </div>
+        <button class="btn" id="signout">Sign out</button>
+      </div>
+      <p id="notice" class="notice" role="status" hidden></p>
+      <div class="dash-grid">
+        <section class="dash-panel">
+          <h2>My trip requests</h2>
+          <div id="bookings">Loading bookings…</div>
+          <p style="margin-top: 16px">
+            <a class="btn" href="packages.html">Explore packages</a>
+          </p>
+        </section>
+        <section class="dash-panel">
+          <h2>Notifications</h2>
+          <div id="user-notifications">Loading notifications…</div>
+        </section>
+        <section class="dash-panel">
+          <h2>Become a local guide</h2>
+          <p>
+            Submit your experience, languages, destinations and verification
+            details. Approval is manual; don't claim to be verified until
+            approved.
+          </p>
+          <button
+            id="apply-guide"
+            class="btn"
+            type="button"
+            style="margin-top: 14px"
+          >
+            Apply to become a guide
+          </button>
+          <div id="guide-application" hidden>
+            <form id="guide-form">
+              <label>Full name<input id="app-name" required /></label
+              ><label
+                >Phone number<input id="app-phone" required type="tel" /></label
+              ><label
+                >Languages (comma separated)<input
+                  id="app-languages"
+                  required
+                  placeholder="Assamese, Hindi, English" /></label
+              ><label
+                >Destinations you guide (comma separated)<input
+                  id="app-destinations"
+                  required
+                  placeholder="Kaziranga, Majuli" /></label
+              ><label
+                >Expected day rate (INR)<input
+                  id="app-daily-rate"
+                  type="number"
+                  min="0"
+                  max="1000000"
+                  step="100"
+                  required
+                  placeholder="e.g. 1800" /></label
+              ><label
+                >Relevant experience<textarea
+                  id="app-experience"
+                  rows="3"
+                  required
+                ></textarea></label
+              ><label
+                >Verification notes<textarea
+                  id="app-verification"
+                  rows="3"
+                  required
+                  placeholder="Describe permits, certifications or references. Do not put private documents in public text."
+                ></textarea></label
+              ><button class="btn" type="submit">Submit application</button>
+            </form>
+          </div>
+        </section>
+        <section class="dash-panel">
+          <h2>Account & support</h2>
+          <p>
+            Keep your email accessible for booking updates. Contact support for
+            cancellations, refunds, safety concerns or account corrections.
+          </p>
+          <a class="btn" href="safety.html" style="margin-top: 14px"
+            >Safety centre</a
+          >
+        </section>
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="motion.js" defer></script>
+  </body>
+</html>

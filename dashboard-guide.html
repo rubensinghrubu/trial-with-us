@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Guide dashboard · Trail With Us</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .dash {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 36px 5vw 70px;
+      }
+      .dash-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+      }
+      .dash-head h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+      }
+      .dash-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+        gap: 22px;
+      }
+      .dash-panel {
+        background: #fff9e8;
+        border: 3px solid var(--n0);
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: 5px 5px 0 var(--n2);
+        min-width: 0;
+      }
+      .dash-panel h2 {
+        font-size: 1.45rem;
+        margin-bottom: 14px;
+      }
+      .dash-item {
+        border-top: 1px solid #b7b9c7;
+        padding: 14px 0;
+        overflow-wrap: anywhere;
+      }
+      .dash-item h3 {
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+      }
+      .dash-item p {
+        margin: 5px 0;
+      }
+      .dash form label {
+        margin: 10px 0;
+      }
+      .dash input,
+      .dash textarea {
+        width: 100%;
+        min-width: 0;
+      }
+      .dash textarea {
+        background: var(--cr);
+        border: 3px solid var(--n2);
+        border-radius: 12px;
+        padding: 10px;
+        font: inherit;
+      }
+      .dash-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .dash-actions .btn {
+        white-space: normal;
+      }
+      .notice {
+        padding: 12px 15px;
+        border-radius: 12px;
+        background: #fff0b8;
+        border: 2px solid var(--n2);
+        margin: 0 0 20px;
+        overflow-wrap: anywhere;
+      }
+      .dash [hidden] {
+        display: none !important;
+      }
+      @media (max-width: 560px) {
+        .dash {
+          padding: 24px 16px 50px;
+        }
+        .dash-panel {
+          padding: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body data-role="guide">
+    <main class="dash">
+      <div class="dash-head">
+        <div>
+          <a class="logo" href="index.html">Trail With Us</a>
+          <h1 style="margin-top: 22px">Guide workspace</h1>
+          <p id="welcome">Loading your workspace…</p>
+          <small id="account-email"></small>
+        </div>
+        <button class="btn" id="signout">Sign out</button>
+      </div>
+      <p id="notice" class="notice" role="status" hidden></p>
+      <div class="dash-grid">
+        <section class="dash-panel">
+          <h2>Guide profile & verification</h2>
+          <div id="guide-status">Loading status…</div>
+          <div id="guide-applications"></div>
+          <p style="margin-top: 12px">
+            Keep your contact information, languages, service areas, pricing and
+            certifications current. Only admin-approved guides should be shown
+            as verified.
+          </p>
+        </section>
+        <section class="dash-panel">
+          <h2>Assigned trips</h2>
+          <div id="guide-bookings">Loading trips…</div>
+        </section>
+        <section class="dash-panel">
+          <h2>Guide checklist</h2>
+          <ul>
+            <li>Confirm trip details with travellers.</li>
+            <li>Keep permits and certifications valid.</li>
+            <li>Agree on meeting points and cancellation terms.</li>
+            <li>Use the safety centre for trip safety information.</li>
+            <li>
+              Never request or store a traveller's password or payment card
+              details.
+            </li>
+          </ul>
+        </section>
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="motion.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Safety | Trail With Us</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .safety-brief {
+        max-width: 44ch;
+        font-size: 0.94rem;
+        line-height: 1.5;
+        opacity: 0.84;
+        margin: 8px 0 16px;
+      }
+      #map {
+        min-height: 330px;
+      }
+      @media (max-width: 800px) {
+        #sg {
+          grid-template-columns: minmax(0, 1fr) !important;
+          gap: 28px !important;
+        }
+        #map {
+          min-height: 280px;
+        }
+      }
+    </style>
+  </head>
+  <body
+    data-page="safety"
+    data-title="Safety"
+    data-sub="Track your route and keep emergency contacts close."
+    data-img="safety"
+  >
+    <section class="blk">
+      <div
+        class="w"
+        style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px"
+        id="sg"
+      >
+        <div>
+          <h2 class="sec-h" style="font-size: 2.4rem">GPS tracking</h2>
+          <div id="map"></div>
+          <div class="ctl" style="margin: 24px 0 0; flex-wrap: wrap">
+            <button class="btn" id="go">Start tracking</button
+            ><button class="btn alt" id="demo">Demo trek</button
+            ><button class="btn alt" id="stop">Stop</button
+            ><button class="btn alt" id="cp">Copy location link</button>
+          </div>
+          <div
+            class="kv mid"
+            style="margin-top: 24px; padding: 18px; border-radius: 22px"
+          >
+            <div><small>Latitude</small><b id="la">–</b></div>
+            <div><small>Longitude</small><b id="lo">–</b></div>
+            <div><small>Accuracy</small><b id="ac">–</b></div>
+            <div><small>Distance</small><b id="ds">0 m</b></div>
+            <div><small>Status</small><b id="stt">Off</b></div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="sec-h" style="font-size: 2.4rem" id="sos">
+            Emergency SOS
+          </h2>
+          <p class="safety-brief">
+            Hold SOS to prepare a message with your location. Review it before
+            sending; nothing is sent automatically.
+          </p>
+          <button
+            class="sosbtn"
+            id="sb"
+            aria-label="Hold to prepare an SOS message"
+          >
+            SOS<small>hold to prepare</small
+            ><svg viewBox="0 0 264 264">
+              <circle cx="132" cy="132" r="132" />
+            </svg>
+          </button>
+          <div class="disp" id="dp">
+            <h3 style="margin-bottom: 6px">SOS message ready</h3>
+            <p id="dm" style="opacity: 0.85; font-size: 0.95rem"></p>
+            <ul id="dl" style="margin: 14px 0; padding: 0"></ul>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap">
+              <a class="btn" href="tel:112">Call 112</a
+              ><a class="btn alt" id="sms" href="#">Text my contacts</a
+              ><button class="btn alt" id="ok">I am safe, cancel</button>
+            </div>
+          </div>
+
+          <div class="card" style="padding: 22px; margin-top: 34px">
+            <h3>Emergency contacts</h3>
+            <div id="ct"></div>
+            <form
+              id="cf3"
+              class="ctl"
+              style="margin: 14px 0 0; padding: 14px; background: var(--n1)"
+            >
+              <label>Name<input id="cn" required /></label
+              ><label>Phone<input id="cph" type="tel" required /></label
+              ><button class="btn alt sm">Add</button>
+            </form>
+          </div>
+
+          <div class="card" style="padding: 22px; margin-top: 30px">
+            <h3>Safe-return check-in</h3>
+            <p class="safety-brief">
+              If the timer expires, the SOS panel opens. It does not send
+              automatically.
+            </p>
+            <div
+              style="
+                display: flex;
+                gap: 12px;
+                align-items: flex-end;
+                flex-wrap: wrap;
+                margin-top: 12px;
+              "
+            >
+              <label
+                >Check in within<select id="ci2" style="min-width: 150px">
+                  <option value="30">30 sec (demo)</option>
+                  <option value="7200">2 hours</option>
+                  <option value="14400">4 hours</option>
+                  <option value="28800">8 hours</option>
+                </select></label
+              ><button class="btn sm" id="cs">Start timer</button
+              ><button class="btn alt sm" id="cn2">I am safe</button>
+            </div>
+            <b
+              class="price"
+              id="tm"
+              style="display: block; margin-top: 12px"
+            ></b>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="assets/leaflet/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+    <script>
+      const $m = window.L ? L.map("map").setView([26.4, 93], 6) : null,
+        PIN = [
+          [25.6, 94.1],
+          [25.25, 91.68],
+          [25.18, 92.02],
+          [26.58, 93.17],
+          [26.95, 94.17],
+          [27.59, 91.86],
+          [27.55, 93.83],
+        ];
+      let mk,
+        line,
+        pts = [],
+        wid,
+        dem,
+        dist = 0,
+        last,
+        pos = null;
+      if ($m) {
+        const mapEl = $("#map"),
+          str = L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+              maxZoom: 19,
+              subdomains: "abc",
+              attribution: "© OpenStreetMap contributors",
+            },
+          ),
+          carto = L.tileLayer(
+            "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+            {
+              maxZoom: 19,
+              subdomains: "abcd",
+              attribution: "© OpenStreetMap, © CARTO",
+            },
+          ),
+          topo = L.tileLayer(
+            "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+            { maxZoom: 17, attribution: "© OpenTopoMap, © OpenStreetMap" },
+          );
+        let fallbackUsed = false;
+        str.on("tileerror", () => {
+          mapEl.classList.add("nt");
+          if (!fallbackUsed) {
+            fallbackUsed = true;
+            carto.addTo($m);
+          }
+        });
+        str.on("tileload", () => mapEl.classList.remove("nt"));
+        carto.on("tileload", () => mapEl.classList.remove("nt"));
+        topo.on("tileerror", () => mapEl.classList.add("nt"));
+        topo.on("tileload", () => mapEl.classList.remove("nt"));
+        str.addTo($m);
+        L.control
+          .layers(
+            {
+              OpenStreetMap: str,
+              "Streets (fallback)": carto,
+              "Trek terrain": topo,
+            },
+            null,
+            { position: "topright" },
+          )
+          .addTo($m);
+        PIN.forEach((p, i) =>
+          L.circleMarker(p, {
+            radius: 9,
+            color: "#010736",
+            fillColor: "#fcf1d0",
+            fillOpacity: 1,
+            weight: 3,
+          })
+            .addTo($m)
+            .bindPopup("<b>" + DEST[i] + "</b><br>" + STATE[i]),
+        );
+        line = L.polyline([], { color: "#22396f", weight: 6 }).addTo($m);
+        $m.fitBounds(PIN, { padding: [30, 30] });
+        setTimeout(() => $m.invalidateSize(), 300);
+        addEventListener("resize", () => $m.invalidateSize());
+      } else
+        $("#map").innerHTML =
+          '<p style="padding:30px;color:#fcf1d0">The map library did not load. Tracking still works.</p>';
+      function upd(la, lo, ac) {
+        pos = { la, lo };
+        $("#la").textContent = la.toFixed(5);
+        $("#lo").textContent = lo.toFixed(5);
+        $("#ac").textContent = ac ? Math.round(ac) + " m" : "demo";
+        $("#stt").textContent = "Live";
+        if (last && $m) dist += $m.distance(last, [la, lo]);
+        last = [la, lo];
+        $("#ds").textContent =
+          dist > 1000
+            ? (dist / 1000).toFixed(2) + " km"
+            : Math.round(dist) + " m";
+        if ($m) {
+          pts.push([la, lo]);
+          line.setLatLngs(pts);
+          if (!mk) {
+            mk = L.circleMarker([la, lo], {
+              radius: 11,
+              color: "#010736",
+              fillColor: "#fcf1d0",
+              fillOpacity: 1,
+              weight: 5,
+            }).addTo($m);
+            $m.flyTo([la, lo], 15, { duration: 1.4 });
+          } else {
+            mk.setLatLng([la, lo]);
+            $m.panTo([la, lo]);
+          }
+        }
+      }
+      function stopAll() {
+        wid != null && navigator.geolocation.clearWatch(wid);
+        clearInterval(dem);
+        wid = null;
+        $("#stt").textContent = "Off";
+      }
+      $("#go").onclick = () => {
+        stopAll();
+        if (!navigator.geolocation)
+          return toast("GPS not available here. Try Demo trek.");
+        $("#stt").textContent = "Locating";
+        wid = navigator.geolocation.watchPosition(
+          (p) => upd(p.coords.latitude, p.coords.longitude, p.coords.accuracy),
+          (e) => {
+            $("#stt").textContent = "Blocked";
+            toast("Location blocked. Allow it, or use Demo trek.");
+          },
+          { enableHighAccuracy: true },
+        );
+      };
+      $("#demo").onclick = () => {
+        stopAll();
+        pts = [];
+        dist = 0;
+        last = null;
+        if (mk) {
+          mk.remove();
+          mk = null;
+        }
+        if (line) line.setLatLngs([]);
+        let a = 25.6035,
+          b = 94.1005,
+          k = 0;
+        dem = setInterval(() => {
+          k++;
+          a -= 0.0006 + Math.sin(k / 4) * 0.0002;
+          b -= 0.0004 - Math.cos(k / 5) * 0.0003;
+          upd(a, b, 0);
+        }, 900);
+      };
+      $("#stop").onclick = stopAll;
+      const link = () =>
+        pos ? `https://maps.google.com/?q=${pos.la},${pos.lo}` : "";
+      $("#cp").onclick = () => {
+        if (!pos) return toast("Start tracking first");
+        navigator.clipboard && navigator.clipboard.writeText(link());
+        toast("Location link copied");
+      };
+      /* contacts */
+      const rc = () => {
+        $("#ct").innerHTML = st.contacts.length
+          ? st.contacts
+              .map(
+                (c, i) =>
+                  `<div class="it"><div><b>${c[0]}</b><small>${c[1]}</small></div><button data-d="${i}">Remove</button></div>`,
+              )
+              .join("")
+          : '<p style="margin:10px 0">No contacts yet. Add one so SOS has someone to reach.</p>';
+      };
+      $("#cf3").onsubmit = (e) => {
+        e.preventDefault();
+        st.contacts.push([$("#cn").value, $("#cph").value]);
+        save();
+        rc();
+        e.target.reset();
+      };
+      $("#ct").onclick = (e) => {
+        const d = e.target.dataset.d;
+        if (d != null) {
+          st.contacts.splice(d, 1);
+          save();
+          rc();
+        }
+      };
+      rc();
+      /* SOS */
+      let ht,
+        fired = false;
+      const sb = $("#sb");
+      function fire() {
+        fired = true;
+        const loc = pos ? link() : "location not available yet",
+          who = [
+            "Location link ready",
+            ...st.contacts.map((c) => c[0] + " (" + c[1] + ")"),
+            "Local emergency number 112 (tap to call)",
+          ];
+        $("#dm").textContent = "Location: " + loc + ". Review before sending.";
+        $("#dl").innerHTML = who.map((w) => `<li>${w}</li>`).join("");
+        $("#dp").classList.add("on");
+        $$("#dl li").forEach((l, i) =>
+          setTimeout(() => l.classList.add("ok"), 500 * (i + 1)),
+        );
+        const body = encodeURIComponent(
+          "SOS from Trail With Us. I need help. My location: " + loc,
+        );
+        $("#sms").href =
+          "sms:" + st.contacts.map((c) => c[1]).join(",") + "?body=" + body;
+        navigator.vibrate && navigator.vibrate([300, 100, 300]);
+        $("#dp").scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      const down = (e) => {
+          e.preventDefault();
+          fired = false;
+          sb.classList.add("hold");
+          ht = setTimeout(fire, 2200);
+        },
+        up = () => {
+          clearTimeout(ht);
+          sb.classList.remove("hold");
+        };
+      sb.addEventListener("pointerdown", down);
+      ["pointerup", "pointerleave", "pointercancel"].forEach((v) =>
+        sb.addEventListener(v, up),
+      );
+      sb.addEventListener("keydown", (e) => {
+        if ((e.key == "Enter" || e.key == " ") && !e.repeat) fire();
+      });
+      $("#ok").onclick = () => {
+        $("#dp").classList.remove("on");
+        toast("SOS cancelled. Glad you are safe.");
+      };
+      /* check-in */
+      let ct,
+        left = 0;
+      const fmt = (s) =>
+        s >= 3600
+          ? Math.floor(s / 3600) + "h " + Math.floor((s % 3600) / 60) + "m"
+          : Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+      $("#cs").onclick = () => {
+        clearInterval(ct);
+        left = +$("#ci2").value;
+        $("#tm").textContent = "Check in within " + fmt(left);
+        ct = setInterval(() => {
+          left--;
+          $("#tm").textContent = "Check in within " + fmt(left);
+          if (left <= 0) {
+            clearInterval(ct);
+            $("#tm").textContent =
+              "Check-in missed. SOS message panel opened; choose a contact action.";
+            fire();
+          }
+        }, 1000);
+      };
+      $("#cn2").onclick = () => {
+        clearInterval(ct);
+        $("#tm").textContent = "Checked in. You are safe.";
+      };
+      if (
+        location.hash == "#sos" ||
+        new URLSearchParams(location.search).get("sos")
+      )
+        setTimeout(() => $("#sos").scrollIntoView({ behavior: "smooth" }), 200);
+    </script>
+    <style>
+      #map.nt:after {
+        content: "Map tiles need an internet connection. Your route and position still show.";
+        position: absolute;
+        left: 12px;
+        bottom: 28px;
+        z-index: 500;
+        background: #fcf1d0;
+        color: #010736;
+        padding: 6px 12px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+      }
+      #map {
+        background:
+          #0d1c42
+            linear-gradient(rgba(252, 241, 208, 0.08) 1px, transparent 1px) 0
+            0/40px 40px,
+          linear-gradient(90deg, rgba(252, 241, 208, 0.08) 1px, transparent 1px)
+            0 0/40px 40px;
+      }
+      @media (max-width: 900px) {
+        #sg {
+          grid-template-columns: 1fr !important;
+        }
+      }
+    </style>
+    <script src="motion.js" defer></script>
+  </body>
+</html>

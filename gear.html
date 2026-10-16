@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Gear | Trail With Us</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body
+    data-page="gear"
+    data-title="Gear"
+    data-sub="Compare starter rental rates for trekking essentials. Stock, condition and pickup must be confirmed before acceptance."
+    data-img="travelling-gear"
+  >
+    <div class="w">
+      <div class="ctl">
+        <label>Rental days<select data-k="gd"></select></label>
+      </div>
+    </div>
+    <section style="padding-bottom: 90px">
+      <div class="w">
+        <div class="grid" id="l"></div>
+        <div
+          class="card"
+          style="
+            margin-top: 34px;
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+          "
+        >
+          <b id="gt"></b><span id="ga"></span>
+        </div>
+      </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+    <script>
+      bind(() => {
+        if (!E.length) {
+          $("#l").innerHTML =
+            `<div class="empty-state"><h2>No published gear rentals</h2><p>The admin has not published gear inventory yet.</p></div>`;
+          $("#gt").textContent = "No gear available";
+          $("#ga").innerHTML = "";
+          return;
+        }
+        const t = gearTot(),
+          it = {
+            id: "gear",
+            kind: "gear_bundle",
+            travellers: st.trav,
+            lines: t.l.map(([item, qty]) => ({
+              catalog_key: String(item[4] ?? E.indexOf(item)),
+              quantity: qty * st.gd,
+            })),
+            t: "Gear rental",
+            d:
+              t.l.map(([e, q]) => q + "x " + e[0]).join(", ") +
+              `, ${st.gd} day${st.gd > 1 ? "s" : ""}`,
+            p: t.p,
+          };
+        $("#l").innerHTML = E.map((e, i) => {
+          const key = String(e[4] ?? i),
+            quantity = st.gear[key] || st.gear[i] || 0;
+          const description = e[3] ? `<p>${safeText(e[3])}</p>` : "";
+          return `<article class="card"><div class="gi">${safeText(e[2])}</div><div class="cb"><h3>${safeText(e[0])}</h3><small>${inr(e[1])} per day</small>${description}<div class="bt"><div class="step"><button data-g="${safeText(key)}" data-s="-1" aria-label="Fewer">−</button><b>${quantity}</b><button data-g="${safeText(key)}" data-s="1" aria-label="More">+</button></div><b>${inr(e[1] * quantity * st.gd)}</b></div></div></article>`;
+        }).join("");
+        $("#gt").textContent = t.p
+          ? `${inr(t.p)} for ${st.gd} day${st.gd > 1 ? "s" : ""}`
+          : "Pick the gear you need";
+        $("#ga").innerHTML =
+          `<button class="btn sm" id="gear-add" ${t.p ? "" : "disabled"}>${has("gear") ? "Update gear in trip" : "Add selected gear to trip"}</button>`;
+        $("#gear-add").onclick = async () => {
+          if (!t.p) return toast("Choose at least one gear item first");
+          if (!(await requireSignedInForTrip())) return;
+          const old = st.cart.find((c) => c.id === "gear");
+          if (old) {
+            old.t = it.t;
+            old.d = it.d;
+            old.p = it.p;
+            old.kind = it.kind;
+            old.lines = it.lines;
+            old.travellers = it.travellers;
+          } else st.cart.push(it);
+          save();
+          cartCount();
+          toast("Gear added to your trip");
+          redraw(false);
+        };
+        const c = st.cart.find((c) => c.id == "gear");
+        if (c && t.p) {
+          c.p = t.p;
+          c.d = it.d;
+          save();
+        }
+      });
+      document.addEventListener("click", (e) => {
+        const t = e.target.closest("[data-g]");
+        if (!t) return;
+        const i = String(t.dataset.g);
+        st.gear[i] = Math.max(0, (st.gear[i] || 0) + +t.dataset.s);
+        if (!gearTot().p) st.cart = st.cart.filter((c) => c.id != "gear");
+        save();
+        cartCount();
+        redraw(false);
+      });
+      (async () => {
+        const client = window.twuGetSupabaseClient?.();
+        if (!client) return;
+        try {
+          const { data, error } = await client
+            .from("trip_listings")
+            .select("*")
+            .eq("listing_type", "gear")
+            .eq("is_published", true)
+            .order("catalog_key", { ascending: true, nullsFirst: false })
+            .order("title", { ascending: true });
+          if (error) throw error;
+          if (!Array.isArray(data) || !data.length) {
+            E.splice(0, E.length);
+            redraw(true);
+            return;
+          }
+          const oldByTitle = new Map(
+            E.map((item, index) => [
+              String(item[0]).toLowerCase(),
+              st.gear[String(item[4] ?? index)] || st.gear[index] || 0,
+            ]),
+          );
+          const nextGear = {};
+          data.forEach((item, index) => {
+            const key = String(
+              item.catalog_key || item.id || `remote-gear-${index}`,
+            );
+            nextGear[key] =
+              st.gear[key] ||
+              oldByTitle.get(String(item.title).toLowerCase()) ||
+              0;
+          });
+          st.gear = nextGear;
+          E.splice(
+            0,
+            E.length,
+            ...data.map((item, index) => [
+              item.title,
+              Number(item.price) || 0,
+              item.emoji || "🎒",
+              item.description || "",
+              String(item.catalog_key || item.id || `remote-gear-${index}`),
+            ]),
+          );
+          save();
+          redraw(true);
+        } catch (error) {
+          console.warn("Shared gear inventory could not be loaded.", error);
+          E.splice(0, E.length);
+          redraw(true);
+        }
+      })();
+    </script>
+    <script src="motion.js" defer></script>
+  </body>
+</html>

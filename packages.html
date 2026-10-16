@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Packages | Trail With Us</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body
+    data-page="packages"
+    data-title="Packages"
+    data-sub="Ready-made trips with guide, stay and transport already included."
+    data-img="travel-packages"
+  >
+    <div class="w">
+      <div class="ctl">
+        <label>Travellers<select data-k="trav"></select></label>
+      </div>
+    </div>
+    <section style="padding-bottom: 90px">
+      <div class="w">
+        <div
+          class="chipbar"
+          id="bb"
+          style="display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap"
+        ></div>
+        <div class="grid" id="l"></div>
+      </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+    <script>
+      let remotePackages = null;
+      const packageEscape = (v) =>
+        String(v ?? "").replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      const packagePhoto = (row, index) => {
+        const url = String(row.image_url || "").trim();
+        if (url.startsWith("assets/") || /^https:\/\//i.test(url))
+          return `<div class="pic" role="img" aria-label="${packageEscape(row.title)}" style="background-image:url(&quot;${packageEscape(url)}&quot;)">`;
+        return pic(index);
+      };
+      function packageList() {
+        const rows =
+          remotePackages !== null
+            ? remotePackages.map((row) => {
+                const fallback = P.find(
+                  (p) => p[0].toLowerCase() === String(row.title).toLowerCase(),
+                );
+                const price = Number(row.price) || 0;
+                const discount = Math.min(
+                  100,
+                  Math.max(0, Number(row.discount_percent) || 0),
+                );
+                const category =
+                  price <= 12000
+                    ? "Budget"
+                    : price <= 20000
+                      ? "Mid-range"
+                      : "Premium";
+                const placeName =
+                  row.places?.name ||
+                  (fallback ? DEST[fallback[4]] : "Northeast India");
+                return {
+                  id: row.id,
+                  title: row.title,
+                  days: Number(row.duration_days || fallback?.[1] || 1),
+                  price,
+                  discount,
+                  category,
+                  description: row.description || "",
+                  image: row.image_url || fallback?.[4],
+                  place: placeName,
+                };
+              })
+            : P.map((p) => ({
+                id: null,
+                title: p[0],
+                days: p[1],
+                price: p[2],
+                discount: 0,
+                category: p[3],
+                description: p[5],
+                image: p[4],
+                place: DEST[p[4]],
+              }));
+        const filtered = rows.filter(
+          (p) => st.bud === "All" || p.category === st.bud,
+        );
+        $("#bb").innerHTML = ["All", "Budget", "Mid-range", "Premium"]
+          .map(
+            (b) =>
+              `<button type="button" class="btn sm ${st.bud === b ? "on" : "alt"}" data-b="${b}">${b}</button>`,
+          )
+          .join("");
+        $("#l").innerHTML = filtered.length
+          ? filtered
+              .map((p, i) => {
+                const originalTotal = p.price * st.trav;
+                const perTraveller = Math.round(
+                  p.price * (1 - p.discount / 100),
+                );
+                const item = {
+                  id: `p-${p.id || p.title}-${st.trav}`,
+                  kind: "package",
+                  source_id: p.id,
+                  quantity: st.trav,
+                  travellers: st.trav,
+                  t: "Package: " + p.title,
+                  d: `${p.days} days, ${st.trav} traveller${st.trav > 1 ? "s" : ""}`,
+                  p: perTraveller * st.trav,
+                };
+                const photo =
+                  typeof p.image === "number"
+                    ? pic(p.image)
+                    : packagePhoto({ title: p.title, image_url: p.image }, 0);
+                return `<article class="card">${photo}<span class="tagc">${packageEscape(p.category)}</span></div><div class="cb"><h3>${packageEscape(p.title)}</h3><small>${p.days} days · ${packageEscape(p.place)}</small><p>${packageEscape(p.description)}</p><div class="bt"><div><span class="price">${inr(item.p)}</span>${p.discount ? `<small><s>${inr(originalTotal)}</s> · ${p.discount}% off</small>` : `<small>${inr(p.price)} per traveller</small>`}</div>${btn(item)}</div></div></article>`;
+              })
+              .join("")
+          : "<p>No packages match this filter yet.</p>";
+      }
+      bind(packageList);
+      document.addEventListener("click", (e) => {
+        const b = e.target.closest("[data-b]");
+        if (b) {
+          st.bud = b.dataset.b;
+          save();
+          redraw(true);
+        }
+      });
+      (async () => {
+        const configured =
+          window.SUPABASE_URL &&
+          window.SUPABASE_ANON_KEY &&
+          !window.SUPABASE_URL.includes("YOUR-PROJECT") &&
+          !window.SUPABASE_ANON_KEY.includes("YOUR_SUPABASE") &&
+          window.supabase;
+        if (!configured) return;
+        try {
+          const client =
+            window.__twuSupabase ||
+            (window.__twuSupabase = window.supabase.createClient(
+              window.SUPABASE_URL,
+              window.SUPABASE_ANON_KEY,
+              {
+                auth: {
+                  persistSession: true,
+                  autoRefreshToken: true,
+                  storage: window.localStorage,
+                },
+              },
+            ));
+          const { data, error } = await client
+            .from("packages")
+            .select("*,places(name,state)")
+            .eq("is_published", true)
+            .order("created_at", { ascending: false });
+          if (error) throw error;
+          remotePackages = Array.isArray(data) ? data : [];
+          redraw(true);
+        } catch (error) {
+          console.warn(
+            "Published packages could not be loaded; refusing to present local sample packages as bookable inventory.",
+            error,
+          );
+          remotePackages = [];
+          redraw(true);
+        }
+      })();
+    </script>
+    <script src="motion.js" defer></script>
+  </body>
+</html>

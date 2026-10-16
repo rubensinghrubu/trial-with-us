@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Trail With Us: your best travel buddy in Northeast India</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-page="home">
+    <section class="hero">
+      <video
+        class="bg"
+        id="bg0"
+        autoplay
+        muted
+        loop
+        playsinline
+        poster="assets/hikers.jpg"
+        aria-hidden="true"
+      >
+        <source src="assets/hero-video.mp4" type="video/mp4" />
+      </video>
+      <div class="w">
+        <div>
+          <h1>
+            <span><em>Trail</em></span
+            ><span><em>With Us</em></span>
+          </h1>
+          <p class="lead">
+            Pick a place. We match you with a local guide who speaks your
+            language, then book the rest.
+          </p>
+          <div class="hero-auth-actions" aria-label="Account actions">
+            <a class="btn alt" href="login.html">Log in</a>
+            <a class="btn" href="login.html?mode=signup">Create account</a>
+          </div>
+          <form class="find" id="ff">
+            <label>State<select data-k="state" required></select></label
+            ><label
+              >Place to visit<select
+                data-k="dest"
+                required
+                disabled
+              ></select></label
+            ><label>Guide speaks<select data-k="lang"></select></label
+            ><label>Travellers<select data-k="trav"></select></label
+            ><button class="btn">Find my guide</button>
+          </form>
+        </div>
+        <div class="polas" id="pl">
+          <a
+            class="pola"
+            href="gallery.html"
+            aria-label="Explore Dzükou Valley photos"
+            ><div style="background-image: url(assets/valley.jpg)"></div>
+            <span>Dzükou Valley</span></a
+          ><a
+            class="pola"
+            href="gallery.html"
+            aria-label="Explore living root bridge photos"
+            ><div style="background-image: url(assets/bridge.jpg)"></div>
+            <span>Living root bridge</span></a
+          ><a
+            class="pola"
+            href="gallery.html"
+            aria-label="Explore Dawki river photos"
+            ><div style="background-image: url(assets/boats.jpg)"></div>
+            <span>Dawki river</span></a
+          >
+        </div>
+      </div>
+    </section>
+    <div class="mq"><div id="mq"></div></div>
+
+    <section class="blk">
+      <div class="w">
+        <h2 class="sec-h">Plan less. Experience more.</h2>
+        <p style="max-width: 50ch">
+          Discover guides, stays, rides, gear and trips designed around the
+          Northeast.
+        </p>
+        <div class="mods" id="mods"></div>
+      </div>
+    </section>
+
+    <section class="blk explore-states">
+      <div class="w">
+        <div class="state-section-head">
+          <p class="eyebrow">THE NORTHEAST, ALL TOGETHER</p>
+          <h2 class="sec-h">Eight states. Countless ways to wander.</h2>
+          <p>
+            From high Himalayan passes to river islands, choose a state and
+            explore its signature places.
+          </p>
+        </div>
+        <div class="state-feature-grid" id="state-feature-grid"></div>
+        <p class="state-section-action">
+          <a class="btn" href="destinations.html"
+            >Explore all destinations <span aria-hidden="true">↗</span></a
+          >
+        </p>
+      </div>
+    </section>
+    <section class="blk">
+      <div class="w safe">
+        <div>
+          <h2 class="sec-h">Safety is built in, not bolted on</h2>
+          <p style="max-width: 44ch; margin-bottom: 24px">
+            Share your current location link, add emergency contacts and use the
+            safety demo to prepare a message. This demo does not automatically
+            alert anyone; call 112 in an emergency.
+          </p>
+          <a class="btn" href="safety.html">Open safety centre</a>
+        </div>
+        <div class="phone">
+          <div class="map">
+            <svg viewBox="0 0 300 260" width="100%">
+              <path
+                d="M0 200q60-90 120-40t110-60 70-30"
+                stroke="#fcf1d0"
+                stroke-width="4"
+                fill="none"
+                stroke-dasharray="2 10"
+                stroke-linecap="round"
+              />
+              <circle cx="230" cy="100" r="24" fill="#fcf1d0" opacity=".25">
+                <animate
+                  attributeName="r"
+                  values="10;30;10"
+                  dur="2s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+              <circle cx="230" cy="100" r="9" fill="#fcf1d0" />
+            </svg>
+          </div>
+          <a class="sosdemo" href="safety.html#sos"
+            >SOS demo · hold to prepare</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <section class="blk mid">
+      <div class="w">
+        <h2 class="sec-h">Guides travellers will meet</h2>
+        <div class="grid" id="fg" style="margin-top: 34px"></div>
+        <p style="margin-top: 34px">
+          <a class="btn alt" href="guides.html">See all guides</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="w">
+        <h2 class="sec-h">Ready trails</h2>
+        <div class="grid" id="pk" style="margin-top: 34px"></div>
+      </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+    <script>
+      $("#mq").innerHTML = DEST.map((d) => `<span>${d}</span>`)
+        .join("")
+        .repeat(4);
+      const M = [
+        [
+          "guides",
+          "Guide matching",
+          "Local guide profiles by destination, language and interest.",
+          "🧑‍🤝‍🧑",
+        ],
+        [
+          "guides",
+          "Multilingual guides",
+          "Hindi, Bengali, Khasi, Assamese, Angami and more.",
+          "🗣️",
+        ],
+        [
+          "stays",
+          "Local homestays",
+          "Sleep in family homes with local meals.",
+          "🏡",
+        ],
+        [
+          "rides",
+          "Transport",
+          "Taxis, private vehicles and shared seats.",
+          "🚙",
+        ],
+        [
+          "gear",
+          "Trek gear rental",
+          "Poles, tents and shoes, handed over at your first stop.",
+          "⛺",
+        ],
+        [
+          "safety",
+          "GPS and SOS",
+          "GPS preview, check-ins and emergency-contact message tools.",
+          "📍",
+        ],
+        [
+          "packages",
+          "Curated packages",
+          "Ready trips for every budget and duration.",
+          "🗺️",
+        ],
+      ];
+      $("#mods").innerHTML = M.map(
+        (m) =>
+          `<a class="card mod" href="${m[0]}.html"><div><div class="ic">${m[3]}</div><h3>${m[1]}</h3><p>${m[2]}</p></div><b>Open →</b></a>`,
+      ).join("");
+      $("#fg").innerHTML = G.length
+        ? G.slice(0, 3)
+            .map((guide, i) => guideCard(guide, i, null, [], 2))
+            .join("")
+        : `<div class="empty-state"><h2>Meet your local guide</h2><p>Approved guide profiles appear here when local providers complete their application.</p></div>`;
+      $("#pk").innerHTML = P.slice(0, 3)
+        .map(
+          (p) =>
+            `<a class="card" href="packages.html">${pic(p[4])}<span class="tagc">${p[3]}</span></div><div class="cb"><h3>${p[0]}</h3><small>${p[1]} days</small><p>${p[5]}</p><span class="price">from ${inr(p[2])}</span></div></a>`,
+        )
+        .join("");
+      window.twuRenderStateFeatures = () => {
+        $("#state-feature-grid").innerHTML = STATE_FEATURES.map((state, i) => {
+          const image =
+            typeof state.image === "string" && /^https:\/\//i.test(state.image)
+              ? state.image
+              : `assets/${String(state.image || "valley")
+                  .replace(/^assets\//, "")
+                  .replace(/\.jpg$/i, "")}.jpg`;
+          return `<a class="state-feature-card" href="destinations.html?state=${encodeURIComponent(state.name)}" style="--state-delay:${i * 55}ms"><div class="state-feature-image" style="background-image:url(&quot;${safeText(image)}&quot;)"></div><div class="state-feature-copy"><span class="state-index">0${i + 1}</span><h3>${safeText(state.name)}</h3><p>${state.places.slice(0, 3).map(safeText).join(" · ")}</p><span class="state-feature-link">Explore state <b aria-hidden="true">↗</b></span></div></a>`;
+        }).join("");
+      };
+      window.twuRenderStateFeatures();
+      bind(() => {
+        $$("#fg [data-id]").forEach((b) => {
+          const it = reg[b.dataset.id];
+          b.className = "btn sm" + (has(it.id) ? " on" : "");
+          b.textContent = has(it.id) ? "Remove from trip" : "Add to trip";
+        });
+      });
+      (async () => {
+        const configured =
+          window.SUPABASE_URL &&
+          window.SUPABASE_ANON_KEY &&
+          !window.SUPABASE_URL.includes("YOUR-PROJECT") &&
+          !window.SUPABASE_ANON_KEY.includes("YOUR_SUPABASE") &&
+          window.supabase;
+        if (!configured) return;
+        try {
+          const client =
+            window.__twuSupabase ||
+            (window.__twuSupabase = window.supabase.createClient(
+              window.SUPABASE_URL,
+              window.SUPABASE_ANON_KEY,
+              {
+                auth: {
+                  persistSession: true,
+                  autoRefreshToken: true,
+                  storage: window.localStorage,
+                },
+              },
+            ));
+          const { data, error } = await client
+            .from("packages")
+            .select("*")
+            .eq("is_published", true)
+            .order("created_at", { ascending: false });
+          if (error) throw error;
+          const rows = Array.isArray(data) ? data : [];
+          const escapeText = (v) =>
+            String(v ?? "").replace(
+              /[&<>"']/g,
+              (c) =>
+                ({
+                  "&": "&amp;",
+                  "<": "&lt;",
+                  ">": "&gt;",
+                  '"': "&quot;",
+                  "'": "&#39;",
+                })[c],
+            );
+          const defaultImage = (title) => {
+            const titleKey = String(title).trim().toLowerCase();
+            const images = {
+              "dzükou weekend": "valley",
+              "roots and rivers": "bridge",
+              "wild assam": "boats",
+              "tawang and ziro loop": "road",
+            };
+            const image = images[titleKey];
+            return image ? `assets/${image}.jpg` : "assets/travel-packages.jpg";
+          };
+          const photoHtml = (row) => {
+            const url = String(row.image_url || defaultImage(row.title)).trim();
+            const safeUrl =
+              url.startsWith("assets/") || /^https:\/\//i.test(url)
+                ? url
+                : "assets/travel-packages.jpg";
+            return `<div class="pic" role="img" aria-label="${escapeText(row.title)}" style="background-image:url(&quot;${escapeText(safeUrl)}&quot;)">`;
+          };
+          $("#pk").innerHTML = rows.length
+            ? rows
+                .slice(0, 3)
+                .map((row) => {
+                  const fallback = P.find(
+                    (p) =>
+                      p[0].toLowerCase() === String(row.title).toLowerCase(),
+                  );
+                  const days = Number(row.duration_days || fallback?.[1] || 1);
+                  const base = Number(row.price) || 0;
+                  const discount = Math.min(
+                    100,
+                    Math.max(0, Number(row.discount_percent) || 0),
+                  );
+                  const current = Math.round(base * (1 - discount / 100));
+                  const band =
+                    base <= 12000
+                      ? "Budget"
+                      : base <= 20000
+                        ? "Mid-range"
+                        : "Premium";
+                  return `<a class="card" href="packages.html">${photoHtml(row)}<span class="tagc">${band}${discount ? ` · ${discount}% off` : ""}</span></div><div class="cb"><h3>${escapeText(row.title)}</h3><small>${days} days</small><p>${escapeText(row.description || "A curated Northeast India trip.")}</p><span class="price">${inr(current)}</span>${discount ? `<small><s>${inr(base)}</s> per traveller</small>` : `<small>per traveller</small>`}</div></a>`;
+                })
+                .join("")
+            : `<div class="empty-state"><h3>No packages published yet</h3><p>Check back soon for curated trips.</p></div>`;
+        } catch (error) {
+          console.warn(
+            "Featured packages could not load from Supabase.",
+            error,
+          );
+        }
+      })();
+      $("#ff").onsubmit = (e) => {
+        e.preventDefault();
+        const params = new URLSearchParams();
+        const stateSelect = $("#ff [data-k=state]");
+        const destSelect = $("#ff [data-k=dest]");
+        const state = stateSelect.value;
+        const dest = destSelect.value;
+        if (!state) {
+          stateSelect.reportValidity();
+          return;
+        }
+        if (!dest) {
+          destSelect.reportValidity();
+          return;
+        }
+        const lang = $("#ff [data-k=lang]").value;
+        params.set("state", state);
+        if (dest) params.set("dest", dest);
+        if (lang && lang !== "Any") params.set("lang", lang);
+        const travellers = $("#ff [data-k=trav]").value;
+        if (travellers) params.set("trav", travellers);
+        location.href =
+          "guides.html" + (params.size ? "?" + params.toString() : "");
+      };
+      addEventListener("mousemove", (e) => {
+        const x = e.clientX / innerWidth - 0.5,
+          y = e.clientY / innerHeight - 0.5;
+        $$(".pola").forEach(
+          (p, i) =>
+            (p.style.translate = `${x * (i + 1) * -14}px ${y * (i + 1) * -14}px`),
+        );
+        $("#bg0").style.translate = `${x * -24}px ${y * -24}px`;
+      });
+    </script>
+    <script src="motion.js" defer></script>
+  </body>
+</html>
