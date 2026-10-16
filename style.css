@@ -516,7 +516,7 @@ a:focus-visible {
 .mq div {
   display: inline-block;
   padding: 14px 0;
-  animation: mq 32s linear infinite;
+  animation: mq 150s linear infinite;
   font: 800 1.7rem var(--d);
 }
 .mq span {
