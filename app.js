@@ -7,341 +7,341 @@ const DESTINATION_CATALOG = [
     state: "Nagaland",
     description:
       "A high ridge valley known for seasonal flowers and trekking routes.",
-    image: "valley",
+    image: "states/nagaland/dzukou-valley",
   },
   {
     place: "Living Root Bridges",
     state: "Meghalaya",
     description:
       "Living bridges woven from rubber tree roots around Nongriat and the Khasi Hills.",
-    image: "bridge",
+    image: "states/meghalaya/root-bridge",
   },
   {
     place: "Dawki & Mawlynnong",
     state: "Meghalaya",
     description:
       "Clear river water, village walks and the green hills of the southern Khasi region.",
-    image: "boats",
+    image: "states/meghalaya/dawki",
   },
   {
     place: "Kaziranga National Park",
     state: "Assam",
     description:
       "Grasslands and wetlands known for the greater one-horned rhinoceros.",
-    image: "falls",
+    image: "states/assam/kaziranga-national-park",
   },
   {
     place: "Majuli Island",
     state: "Assam",
     description:
       "River-island culture, satras, mask making and Mising heritage.",
-    image: "boats",
+    image: "states/assam/majuli-island",
   },
   {
     place: "Tawang",
     state: "Arunachal Pradesh",
     description:
       "High Himalayan scenery, Tawang Monastery and mountain passes.",
-    image: "road",
+    image: "states/arunachal-pradesh/tawang",
   },
   {
     place: "Ziro Valley",
     state: "Arunachal Pradesh",
     description: "Apatani villages, pine hills and paddy landscapes.",
-    image: "valley",
+    image: "states/arunachal-pradesh/ziro-valley",
   },
   {
     place: "Manas National Park",
     state: "Assam",
     description:
       "Foothill forests and riverine wildlife landscapes near Bhutan.",
-    image: "hikers",
+    image: "states/assam/manas-national-park",
   },
   {
     place: "Kamakhya Temple",
     state: "Assam",
     description: "A major Shakti pilgrimage site on Nilachal Hill in Guwahati.",
-    image: "road",
+    image: "states/assam/kamakhya-temple",
   },
   {
     place: "Sivasagar Ahom Heritage",
     state: "Assam",
     description:
       "Ahom-era monuments, tanks and historic architecture around Sivasagar.",
-    image: "bridge",
+    image: "states/assam/sivasagar-ahom-heritage",
   },
   {
     place: "Charaideo Maidams",
     state: "Assam",
     description: "The royal burial mounds of the Ahom dynasty.",
-    image: "hikers",
+    image: "states/assam/charaideo-maidams",
   },
   {
     place: "Haflong & Haflong Lake",
     state: "Assam",
     description: "A hill town surrounded by forested ridges in Dima Hasao.",
-    image: "valley",
+    image: "states/assam/haflong",
   },
   {
     place: "Sela Pass",
     state: "Arunachal Pradesh",
     description:
       "A high mountain pass and lake landscape on the route to Tawang.",
-    image: "road",
+    image: "states/arunachal-pradesh/tawang",
   },
   {
     place: "Dirang",
     state: "Arunachal Pradesh",
     description: "Monpa heritage, apple orchards, valleys and mountain views.",
-    image: "valley",
+    image: "states/arunachal-pradesh/dirang",
   },
   {
     place: "Bomdila",
     state: "Arunachal Pradesh",
     description: "Monasteries, craft centres and Himalayan viewpoints.",
-    image: "hikers",
+    image: "states/arunachal-pradesh/bomdila",
   },
   {
     place: "Mechuka",
     state: "Arunachal Pradesh",
     description:
       "A remote valley with rivers, wooden homes and dramatic mountain scenery.",
-    image: "valley",
+    image: "states/arunachal-pradesh/mechuka",
   },
   {
     place: "Namdapha National Park",
     state: "Arunachal Pradesh",
     description:
       "A vast eastern Himalayan biodiversity hotspot in Changlang district.",
-    image: "falls",
+    image: "states/arunachal-pradesh/namdapha",
   },
   {
     place: "Shillong",
     state: "Meghalaya",
     description: "A lively hill city, music culture, markets and viewpoints.",
-    image: "hikers",
+    image: "states/meghalaya/shillong",
   },
   {
     place: "Sohra (Cherrapunji)",
     state: "Meghalaya",
     description: "Rainforest cliffs, waterfalls, caves and monsoon landscapes.",
-    image: "falls",
+    image: "states/meghalaya/sohra",
   },
   {
     place: "Laitlum Canyon",
     state: "Meghalaya",
     description: "Wide escarpment views above deep green valleys.",
-    image: "valley",
+    image: "states/meghalaya/laitlum-canyons",
   },
   {
     place: "Mawphlang Sacred Forest",
     state: "Meghalaya",
     description: "A community-protected forest with Khasi cultural traditions.",
-    image: "hikers",
+    image: "states/meghalaya/mawphlang-sacred-forest",
   },
   {
     place: "Krang Suri Falls",
     state: "Meghalaya",
     description: "A blue-green waterfall pool surrounded by forested hills.",
-    image: "falls",
+    image: "states/meghalaya/krang-suri-falls",
   },
   {
     place: "Loktak Lake",
     state: "Manipur",
     description:
       "A large freshwater lake with floating phumdis and boat journeys.",
-    image: "boats",
+    image: "states/manipur/loktak-lake",
   },
   {
     place: "Keibul Lamjao National Park",
     state: "Manipur",
     description:
       "The floating national park and habitat of the endangered Sangai deer.",
-    image: "boats",
+    image: "states/manipur/keibul-lamjao-national-park",
   },
   {
     place: "Kangla Fort, Imphal",
     state: "Manipur",
     description:
       "A historic seat of Meitei power and an important cultural site.",
-    image: "bridge",
+    image: "states/manipur/kangla-fort",
   },
   {
     place: "Shirui Hills",
     state: "Manipur",
     description:
       "Mountain landscapes known for the rare Shirui lily in its flowering season.",
-    image: "valley",
+    image: "states/manipur/shirui-hills",
   },
   {
     place: "Andro Heritage Village",
     state: "Manipur",
     description:
       "A traditional village known for pottery, heritage and local craft.",
-    image: "hikers",
+    image: "states/manipur/andro-heritage-village",
   },
   {
     place: "Aizawl",
     state: "Mizoram",
     description:
       "A ridge-top capital with lively markets, views and Mizo culture.",
-    image: "hikers",
+    image: "states/mizoram/aizawl",
   },
   {
     place: "Reiek",
     state: "Mizoram",
     description:
       "A forested hill and heritage village overlooking the surrounding ranges.",
-    image: "valley",
+    image: "states/mizoram/reiek",
   },
   {
     place: "Vantawng Falls",
     state: "Mizoram",
     description:
       "A high waterfall surrounded by dense green hills near Thenzawl.",
-    image: "falls",
+    image: "states/mizoram/vantawng-falls",
   },
   {
     place: "Phawngpui (Blue Mountain)",
     state: "Mizoram",
     description:
       "Mizoram’s highest peak with cloud forests and panoramic viewpoints.",
-    image: "valley",
+    image: "states/mizoram/phawngpui",
   },
   {
     place: "Tam Dil Lake",
     state: "Mizoram",
     description: "A forest-ringed lake popular for quiet nature outings.",
-    image: "boats",
+    image: "states/mizoram/tam-dil-lake",
   },
   {
     place: "Hmuifang",
     state: "Mizoram",
     description:
       "A forested hill area with Mizo village culture and outdoor trails.",
-    image: "hikers",
+    image: "states/mizoram/hmuifang",
   },
   {
     place: "Kohima",
     state: "Nagaland",
     description:
       "The state capital, Naga heritage and the historic war cemetery.",
-    image: "hikers",
+    image: "states/nagaland/kohima",
   },
   {
     place: "Khonoma Green Village",
     state: "Nagaland",
     description:
       "A community-led conservation village with Angami heritage and walking trails.",
-    image: "valley",
+    image: "states/nagaland/khonoma-green-village",
   },
   {
     place: "Mokokchung",
     state: "Nagaland",
     description:
       "Ao Naga culture, lively hill neighbourhoods and nearby villages.",
-    image: "hikers",
+    image: "states/nagaland/mokokchung",
   },
   {
     place: "Doyang Reservoir",
     state: "Nagaland",
     description:
       "Reservoir scenery and a seasonal gathering place for migratory Amur falcons.",
-    image: "boats",
+    image: "states/nagaland/doyang",
   },
   {
     place: "Longwa Village",
     state: "Nagaland",
     description:
       "A Konyak village near the international border, known for its distinctive setting.",
-    image: "road",
+    image: "states/nagaland/longwa",
   },
   {
     place: "Gangtok",
     state: "Sikkim",
     description:
       "A Himalayan city with monasteries, markets and views of Kanchenjunga on clear days.",
-    image: "hikers",
+    image: "states/sikkim/gangtok",
   },
   {
     place: "Tsomgo (Changu) Lake",
     state: "Sikkim",
     description:
       "A high-altitude glacial lake; access rules and permits can apply.",
-    image: "boats",
+    image: "states/sikkim/tsomgo-lake",
   },
   {
     place: "Nathula Pass",
     state: "Sikkim",
     description:
       "A high mountain pass that requires current permit and access checks.",
-    image: "road",
+    image: "states/sikkim/nathula-pass",
   },
   {
     place: "Yumthang Valley",
     state: "Sikkim",
     description:
       "An alpine valley of rivers, meadows and seasonal rhododendrons.",
-    image: "valley",
+    image: "states/sikkim/yumthang-valley",
   },
   {
     place: "Gurudongmar Lake",
     state: "Sikkim",
     description:
       "A high-altitude sacred lake; weather, health and permit restrictions matter.",
-    image: "boats",
+    image: "states/sikkim/gurudongmar-lake",
   },
   {
     place: "Pelling & Pemayangtse",
     state: "Sikkim",
     description: "Monastery heritage and western Sikkim mountain viewpoints.",
-    image: "hikers",
+    image: "states/sikkim/pelling",
   },
   {
     place: "Ravangla Buddha Park",
     state: "Sikkim",
     description:
       "A large Buddha statue and peaceful garden views near the foothills.",
-    image: "valley",
+    image: "states/sikkim/ravangla-buddha-park",
   },
   {
     place: "Ujjayanta Palace, Agartala",
     state: "Tripura",
     description:
       "A white-domed former royal palace now housing a state museum.",
-    image: "bridge",
+    image: "states/tripura/ujjayanta-palace",
   },
   {
     place: "Neermahal",
     state: "Tripura",
     description: "A lake palace set in Rudrasagar Lake.",
-    image: "boats",
+    image: "states/tripura/neermahal",
   },
   {
     place: "Unakoti",
     state: "Tripura",
     description:
       "Rock-cut Shaivite sculptures and monumental stone reliefs in a forested setting.",
-    image: "hikers",
+    image: "states/tripura/unakoti",
   },
   {
     place: "Jampui Hills",
     state: "Tripura",
     description: "Cooler hill scenery, viewpoints and orange-growing villages.",
-    image: "valley",
+    image: "states/tripura/jampui-hills",
   },
   {
     place: "Tripura Sundari Temple",
     state: "Tripura",
     description: "An important historic temple at Matabari near Udaipur.",
-    image: "bridge",
+    image: "states/tripura/tripura-sundari-temple",
   },
   {
     place: "Sepahijala Wildlife Sanctuary",
     state: "Tripura",
     description:
       "A protected area with forest trails, wetlands and wildlife attractions.",
-    image: "falls",
+    image: "states/tripura/sepahijala-wildlife-sanctuary",
   },
 ];
 const DEST = DESTINATION_CATALOG.map((place) => place.place);
@@ -372,7 +372,7 @@ const STATE_FEATURES = [
   {
     name: "Arunachal Pradesh",
     hero: "Tawang",
-    image: "road",
+    image: "states/arunachal-pradesh/arunachal pradesh",
     places: [
       "Tawang",
       "Ziro Valley",
@@ -386,7 +386,7 @@ const STATE_FEATURES = [
   {
     name: "Assam",
     hero: "Kaziranga National Park",
-    image: "falls",
+    image: "states/assam/assam",
     places: [
       "Kaziranga National Park",
       "Majuli Island",
@@ -400,7 +400,7 @@ const STATE_FEATURES = [
   {
     name: "Manipur",
     hero: "Loktak Lake",
-    image: "boats",
+    image: "states/manipur/manipur",
     places: [
       "Loktak Lake",
       "Keibul Lamjao National Park",
@@ -412,7 +412,7 @@ const STATE_FEATURES = [
   {
     name: "Meghalaya",
     hero: "Living Root Bridges",
-    image: "bridge",
+    image: "states/meghalaya/meghalaya",
     places: [
       "Living Root Bridges",
       "Dawki & Mawlynnong",
@@ -426,7 +426,7 @@ const STATE_FEATURES = [
   {
     name: "Mizoram",
     hero: "Aizawl",
-    image: "hikers",
+    image: "states/mizoram/mizoram",
     places: [
       "Aizawl",
       "Reiek",
@@ -439,7 +439,7 @@ const STATE_FEATURES = [
   {
     name: "Nagaland",
     hero: "Dzükou Valley",
-    image: "valley",
+    image: "states/nagaland/nagaland",
     places: [
       "Dzükou Valley",
       "Kohima",
@@ -452,7 +452,7 @@ const STATE_FEATURES = [
   {
     name: "Sikkim",
     hero: "Gangtok",
-    image: "hikers",
+    image: "states/sikkim/sikkim",
     places: [
       "Gangtok",
       "Tsomgo (Changu) Lake",
@@ -466,7 +466,7 @@ const STATE_FEATURES = [
   {
     name: "Tripura",
     hero: "Ujjayanta Palace, Agartala",
-    image: "bridge",
+    image: "states/tripura/tripura",
     places: [
       "Ujjayanta Palace, Agartala",
       "Neermahal",
@@ -704,7 +704,7 @@ async function loadPublishedPlaces() {
         place.place = name;
         place.state = state;
         if (row.description) place.description = row.description;
-        if (normalizedImage) place.image = normalizedImage;
+        // if (normalizedImage) place.image = normalizedImage;
         DEST[index] = name;
         STATE[index] = state;
         DIMG[index] = place.image;
@@ -779,8 +779,8 @@ async function loadPublishedPlaces() {
           place.state === feature.name && isDestinationVisible(index),
       );
       feature.places = visiblePlaces.map((place) => place.place);
-      if (visiblePlaces.length)
-        feature.image = visiblePlaces[0].image || feature.image;
+      // if (visiblePlaces.length)
+      //   feature.image = visiblePlaces[0].image || feature.image;
     });
     return changed;
   })().catch((error) => {
