@@ -28,13 +28,25 @@ This ZIP contains a full visual renovation of the static HTML/CSS/JavaScript web
 
 ## Media assets
 
-The source ZIP did not include the referenced local `assets/` directory or hero video. To avoid blank image panels, the redesigned pages use HTTPS-hosted Unsplash landscape photographs as defaults and as fallbacks for older `assets/*.jpg` references. That means these photographs require an internet connection. Replace them with your own licensed photos or add the original `assets/` directory if you have it; the site does not contain the original image files or video from the first ZIP.
+All fixed image defaults now point to the project's local `assets/` files instead of hardcoded stock-photo URLs. The source ZIP provided for this renovation did **not** contain the actual `assets/` directory or hero video, so this ZIP restores the paths but cannot recreate files that were not uploaded. Keep your existing `assets/` directory beside these HTML/JS/CSS files when you copy the update into your project.
+
+The restored root-level file conventions include `hikers.jpg`, `hero-video.mp4`, `dzukou-valley.jpg`, `valley.jpg`, `bridge.jpg`, `boats.jpg`, `falls.jpg`, `road.jpg`, `homestay.jpg`, `travel-packages.jpg`, `travelling-gear.jpg`, `safety.jpg`, and `slideshow1.jpg` through `slideshow4.jpg`. Destination cards use per-place files at `assets/states/<state-slug>/<place-slug>.jpg`. Published/admin-provided image URLs remain supported, including local `assets/...` paths.
 
 ## Main files changed
 
 - `style.css` — full editorial design system for desktop, tablet and mobile.
-- `app.js` — responsive navigation shell, hosted-photo fallbacks, banner photography and destination image handling.
+- `app.js` — responsive navigation shell, local asset paths, banner imagery and destination image handling.
 - `index.html` — reworked hero/search layout, service grid and state discovery sections.
 - `safety.html` — GPS weather/risk-zone monitor and CDN Leaflet reference.
 - `community.html`, `community.js` — trekker discussion board.
 - `supabase-upgrade.sql`, `supabase-community.sql` — community tables, RLS policies and indexes.
+
+
+### Destination image assets
+The destination explorer uses the per-place image paths rather than replacing them with generic remote photos. Store images at `assets/states/<state-slug>/<place-slug>.jpg`. Examples: `assets/states/nagaland/dzukou-valley.jpg`, `assets/states/meghalaya/root-bridge.jpg`, and `assets/states/assam/majuli-island.jpg`. Published Supabase image URLs remain supported. Destination-state badges are also fixed so they stay compact instead of stretching into tall pills.
+
+## Latest responsive UI polish
+- The homepage eight-state cards now use a consistent photo panel and separate dark content panel, with aligned action rows and responsive sizing.
+- The mobile/tablet navigation drawer is anchored under the header, viewport-constrained, scrollable, and no longer competes with the header's flex layout.
+- Desktop navigation keeps its layout-positioned active underline; mobile navigation uses a staggered drawer reveal and reduced-motion fallback.
+

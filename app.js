@@ -2,24 +2,34 @@ const $ = (s) => document.querySelector(s),
   $$ = (s) => [...document.querySelectorAll(s)],
   inr = (n) => "₹" + Math.round(n).toLocaleString("en-IN");
 const TWU_STATE_PHOTOS = {
-  "Arunachal Pradesh": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1100&q=85",
-  "Assam": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1100&q=85",
-  "Manipur": "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1100&q=85",
-  "Meghalaya": "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1100&q=85",
-  "Mizoram": "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1100&q=85",
-  "Nagaland": "https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1100&q=85",
-  "Sikkim": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1100&q=85",
-  "Tripura": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1100&q=85"
+  "Arunachal Pradesh": "assets/states/arunachal-pradesh/tawang.jpg",
+  "Assam": "assets/states/assam/kaziranga-national-park.jpg",
+  "Manipur": "assets/states/manipur/loktak-lake.jpg",
+  "Meghalaya": "assets/states/meghalaya/root-bridge.jpg",
+  "Mizoram": "assets/states/mizoram/aizawl.jpg",
+  "Nagaland": "assets/states/nagaland/dzukou-valley.jpg",
+  "Sikkim": "assets/states/sikkim/gangtok.jpg",
+  "Tripura": "assets/states/tripura/ujjayanta-palace.jpg"
+};
+const twuResolveImageUrl = (image, fallback = "states/meghalaya/root-bridge") => {
+  const value = String(image || fallback).trim();
+  if (/^https?:\/\//i.test(value) || value.startsWith("data:")) return value;
+  let local = value.replace(/^\/+/, "").replace(/^assets\//i, "");
+  if (!/\.(?:jpe?g|png|webp|avif|gif|svg)$/i.test(local)) local += ".jpg";
+  return `assets/${local}`;
 };
 const TWU_BANNER_PHOTOS = {
-  hikers: TWU_STATE_PHOTOS["Sikkim"], valley: TWU_STATE_PHOTOS["Arunachal Pradesh"],
-  bridge: TWU_STATE_PHOTOS["Meghalaya"], boats: TWU_STATE_PHOTOS["Manipur"],
-  falls: TWU_STATE_PHOTOS["Meghalaya"], road: TWU_STATE_PHOTOS["Nagaland"],
-  gear: "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1100&q=85",
-  "homestay": "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=1100&q=85",
-  "travel-packages": "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1100&q=85",
-  "travelling-gear": "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1100&q=85",
-  "safety": "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1100&q=85"
+  hikers: "assets/hikers.jpg",
+  valley: "assets/valley.jpg",
+  bridge: "assets/bridge.jpg",
+  boats: "assets/boats.jpg",
+  falls: "assets/falls.jpg",
+  road: "assets/road.jpg",
+  gear: "assets/travelling-gear.jpg",
+  homestay: "assets/homestay.jpg",
+  "travel-packages": "assets/travel-packages.jpg",
+  "travelling-gear": "assets/travelling-gear.jpg",
+  safety: "assets/safety.jpg"
 };
 const DESTINATION_CATALOG = [
   {
@@ -920,12 +930,10 @@ function scene(i) {
 }
 const pic = (i, cls = "pic") => {
   const image = DIMG[i];
-  const imageUrl =
-    typeof image === "string" && /^https:\/\//i.test(image)
-      ? image
-      : TWU_STATE_PHOTOS[STATE[i]] || TWU_STATE_PHOTOS["Meghalaya"];
+  const fallback = TWU_STATE_PHOTOS[STATE[i]] || TWU_STATE_PHOTOS["Meghalaya"];
+  const imageUrl = twuResolveImageUrl(image || fallback, fallback);
   return imageUrl
-    ? `<div class="${cls}" role="img" aria-label="${safeText(DEST[i])}" style="background-image:linear-gradient(135deg,rgba(25,61,43,.12),rgba(25,61,43,.34)),url(&quot;${safeText(imageUrl)}&quot;)">`
+    ? `<div class="${cls}" role="img" aria-label="${safeText(DEST[i])}" style="background-image:linear-gradient(135deg,rgba(25,61,43,.12),rgba(12,30,36,.14)),url(&quot;${safeText(imageUrl)}&quot;)">`
     : `<div class="${cls}" role="img" aria-label="${safeText(DEST[i])}">${scene(i)}`;
 };
 /* components */
@@ -1104,6 +1112,11 @@ function layout() {
         o ? "Close navigation menu" : "Open navigation menu",
       );
       document.body.classList.toggle("nav-open", !!o);
+      nv.setAttribute("aria-label", "Primary navigation");
+      if (o && window.matchMedia("(max-width: 1240px)").matches) {
+        const firstLink = nv.querySelector("a");
+        window.setTimeout(() => firstLink?.focus({ preventScroll: true }), 30);
+      }
     };
   const navIndicator = nv.querySelector(".nav-indicator");
   const updateNavIndicator = (target) => {
@@ -1117,29 +1130,34 @@ function layout() {
       navIndicator.style.opacity = "0";
       return;
     }
-    const navRect = nv.getBoundingClientRect();
-    const linkRect = link.getBoundingClientRect();
-    navIndicator.style.setProperty("--nav-indicator-x", `${linkRect.left - navRect.left}px`);
-    navIndicator.style.setProperty("--nav-indicator-width", `${linkRect.width}px`);
+    // offsetLeft/offsetWidth share the nav's layout coordinate system; unlike
+    // viewport rects, they don't jump when the header or page is transitioning.
+    navIndicator.style.left = `${link.offsetLeft}px`;
+    navIndicator.style.width = `${link.offsetWidth}px`;
     navIndicator.style.opacity = "1";
   };
   if (navIndicator) {
-    updateNavIndicator();
+    const scheduleIndicatorUpdate = (target) => window.requestAnimationFrame(() => updateNavIndicator(target));
+    scheduleIndicatorUpdate();
     nv.addEventListener("pointerover", (event) => {
       const link = event.target.closest("a");
-      if (link && nv.contains(link)) updateNavIndicator(link);
+      if (link && nv.contains(link)) scheduleIndicatorUpdate(link);
     });
-    nv.addEventListener("pointerleave", () => updateNavIndicator());
+    nv.addEventListener("pointerleave", () => scheduleIndicatorUpdate());
     nv.addEventListener("focusin", (event) => {
       const link = event.target.closest("a");
-      if (link && nv.contains(link)) updateNavIndicator(link);
+      if (link && nv.contains(link)) scheduleIndicatorUpdate(link);
     });
     nv.addEventListener("focusout", (event) => {
-      if (!nv.contains(event.relatedTarget)) updateNavIndicator();
+      if (!nv.contains(event.relatedTarget)) scheduleIndicatorUpdate();
     });
-    window.addEventListener("resize", () => updateNavIndicator(), { passive: true });
-    window.addEventListener("load", () => updateNavIndicator(), { once: true });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => updateNavIndicator());
+    window.addEventListener("resize", () => scheduleIndicatorUpdate(), { passive: true });
+    window.addEventListener("load", () => scheduleIndicatorUpdate(), { once: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => scheduleIndicatorUpdate());
+    if ("ResizeObserver" in window) {
+      const navResizeObserver = new ResizeObserver(() => scheduleIndicatorUpdate());
+      navResizeObserver.observe(nv);
+    }
   }
   const profileTrigger = $("#profile-trigger"),
     profileDropdown = $("#profile-dropdown");
@@ -1301,7 +1319,9 @@ function layout() {
   });
   bg.onclick = (e) => {
     e.stopPropagation();
-    menu(!nv.classList.contains("open"));
+    const wasOpen = nv.classList.contains("open");
+    menu(!wasOpen);
+    if (wasOpen) bg.focus({ preventScroll: true });
   };
   nv.onclick = (e) => e.target.closest("a") && menu(false);
   document.addEventListener("click", (e) => {

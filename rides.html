@@ -72,7 +72,8 @@
                 (st.rt ? ", return" : ""),
               p,
             };
-          return `<article class="card"><div class="gi" style="font-size:4.5rem">${safeText(v[2])}</div><div class="cb"><h3>${safeText(v[0])}</h3><small>${inr(v[1])} per km · ${st.rt ? "Return trip" : "One way"}</small><div class="bt"><span class="price">${inr(p)}</span>${btn(it)}</div></div></article>`;
+          const imageUrl = twuResolveImageUrl(v[5] || "road.jpg", "road.jpg");
+          return `<article class="card"><div class="pic catalog-photo" role="img" aria-label="${safeText(v[0])}" style="background-image:linear-gradient(135deg,rgba(21,43,53,.12),rgba(21,43,53,.42)),url(&quot;${safeText(imageUrl)}&quot;)"><span class="catalog-photo-icon" aria-hidden="true">${safeText(v[2])}</span></div><div class="cb"><h3>${safeText(v[0])}</h3><small>${inr(v[1])} per km · ${st.rt ? "Return trip" : "One way"}</small><div class="bt"><span class="price">${inr(p)}</span>${btn(it)}</div></div></article>`;
         }).join("");
       });
       (async () => {
@@ -97,6 +98,7 @@
                 item.emoji || "🚐",
                 Number(item.capacity) || 1,
                 item.id,
+                item.image_url || "assets/road.jpg",
               ]),
             );
             redraw(true);

@@ -1008,7 +1008,7 @@
         if (i === 3)
           return `<div class="sc tick" data-decor style="--r:${r}deg"><div><small>Trail memory · keepsake</small><h3>Guwahati → Dzükou Valley</h3><small>Two days outside<br>Stories to take home</small></div><div class="bar"></div></div>`;
         if (i === 4)
-          return `<div class="sc post" data-decor style="--r:-1.5deg;--tr:3deg"><svg viewBox="0 0 90 100"><rect x="4" y="4" width="82" height="92" fill="#477765" stroke="#193d2b" stroke-width="3"/><circle cx="45" cy="40" r="22" fill="#f4f1e7"/><path d="M20 90q25-34 50 0z" fill="#193d2b"/></svg><div class="im" style="background-image:url(https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=900&q=85)"></div><p>A good trip leaves you with muddy shoes, new friends and one story you keep telling.<br><small style="font:500 .8rem Outfit">Trail With Us memory wall</small></p></div>`;
+          return `<div class="sc post" data-decor style="--r:-1.5deg;--tr:3deg"><svg viewBox="0 0 90 100"><rect x="4" y="4" width="82" height="92" fill="#477765" stroke="#193d2b" stroke-width="3"/><circle cx="45" cy="40" r="22" fill="#f4f1e7"/><path d="M20 90q25-34 50 0z" fill="#193d2b"/></svg><div class="im" style="background-image:url(assets/road.jpg)"></div><p>A good trip leaves you with muddy shoes, new friends and one story you keep telling.<br><small style="font:500 .8rem Outfit">Trail With Us memory wall</small></p></div>`;
         return `<div class="sc note" data-decor style="--r:${rr}deg;--tr:${tr[(i + 1) % 4]}deg">${FX[i][1]}</div>`;
       }
       function renderBoard() {
@@ -1137,16 +1137,7 @@
         const url = String(value || "").trim();
         if (/^https:\/\//i.test(url)) return url;
         if (!url.startsWith("assets/")) return "";
-        const key = url.split("/").pop().replace(/\.jpg$/i, "").replace(/\.png$/i, "");
-        const localFallbacks = {
-          valley: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1100&q=85",
-          bridge: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1100&q=85",
-          boats: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1100&q=85",
-          road: "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1100&q=85",
-          falls: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1100&q=85",
-          hikers: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1100&q=85"
-        };
-        return localFallbacks[key] || localFallbacks.valley;
+        return url;
       }
       const galleryEsc = (value) => esc(value);
       function galleryStorageObjectPath(imageUrl) {

@@ -50,7 +50,7 @@
         );
       const packagePhoto = (row, index) => {
         const url = String(row.image_url || "").trim();
-        if (/^https:\/\//i.test(url))
+        if (/^https?:\/\//i.test(url) || url.startsWith("assets/"))
           return `<div class="pic" role="img" aria-label="${packageEscape(row.title)}" style="background-image:url(&quot;${packageEscape(url)}&quot;)">`;
         return pic(index);
       };

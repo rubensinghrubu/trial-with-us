@@ -288,19 +288,6 @@
       button.classList.toggle("is-visible", show);
     });
   });
-  const connectionButton = $("#test-connection");
-  if (connectionButton)
-    connectionButton.addEventListener("click", async () => {
-      connectionButton.disabled = true;
-      const oldText = connectionButton.textContent;
-      connectionButton.textContent = "Checking connection…";
-      try {
-        await checkSupabaseConnection(true);
-      } finally {
-        connectionButton.disabled = false;
-        connectionButton.textContent = oldText;
-      }
-    });
   $("#toggle-mode").addEventListener("click", () =>
     setMode(mode === "signup" ? "signin" : "signup"),
   );

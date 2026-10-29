@@ -19,7 +19,7 @@
         muted
         loop
         playsinline
-        poster="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1800&q=88"
+        poster="assets/hikers.jpg"
         aria-hidden="true"
       >
         <source src="assets/hero-video.mp4" type="video/mp4" />
@@ -45,19 +45,19 @@
             class="pola"
             href="gallery.html"
             aria-label="Explore Dzükou Valley photos"
-            ><div style="background-image:linear-gradient(135deg,rgba(25,61,43,.1),rgba(25,61,43,.25)),url(https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=85)"></div>
+            ><div style="background-image:linear-gradient(135deg,rgba(25,61,43,.1),rgba(25,61,43,.25)),url(assets/dzukou-valley.jpg)"></div>
             <span>Dzükou Valley</span></a
           ><a
             class="pola"
             href="gallery.html"
             aria-label="Explore living root bridge photos"
-            ><div style="background-image:linear-gradient(135deg,rgba(25,61,43,.1),rgba(25,61,43,.25)),url(https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=85)"></div>
+            ><div style="background-image:linear-gradient(135deg,rgba(25,61,43,.1),rgba(25,61,43,.25)),url(assets/bridge.jpg)"></div>
             <span>Living root bridge</span></a
           ><a
             class="pola"
             href="gallery.html"
             aria-label="Explore Dawki river photos"
-            ><div style="background-image:linear-gradient(135deg,rgba(25,61,43,.1),rgba(25,61,43,.25)),url(https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=900&q=85)"></div>
+            ><div style="background-image:linear-gradient(135deg,rgba(25,61,43,.1),rgba(25,61,43,.25)),url(assets/boats.jpg)"></div>
             <span>Dawki river</span></a
           >
         </div>
@@ -374,20 +374,20 @@ const M = [
               "tawang and ziro loop": "road",
             };
             const image = images[titleKey];
-            const remote = {
-              valley: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1100&q=85",
-              bridge: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1100&q=85",
-              boats: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1100&q=85",
-              road: "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1100&q=85"
+            const local = {
+              valley: "assets/valley.jpg",
+              bridge: "assets/bridge.jpg",
+              boats: "assets/boats.jpg",
+              road: "assets/road.jpg"
             };
-            return remote[image] || remote.valley;
+            return local[image] || local.valley;
           };
           const photoHtml = (row) => {
             const url = String(row.image_url || defaultImage(row.title)).trim();
             const safeUrl =
-              /^https:\/\//i.test(url)
+              (/^https:\/\//i.test(url) || url.startsWith("assets/"))
                 ? url
-                : "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1100&q=85";
+                : defaultImage(row.title);
             return `<div class="pic" role="img" aria-label="${escapeText(row.title)}" style="background-image:url(&quot;${escapeText(safeUrl)}&quot;)">`;
           };
           $("#pk").innerHTML = rows.length

@@ -95,11 +95,11 @@
                 const imageUrl = String(item.image_url || "").trim();
                 const photo =
                   imageUrl &&
-                  (/^https:\/\//i.test(imageUrl))
+                  (/^https?:\/\//i.test(imageUrl) || imageUrl.startsWith("assets/"))
                     ? `<div class="pic" role="img" aria-label="${safeText(item.title)}" style="background-image:url(&quot;${safeText(imageUrl)}&quot;)">`
                     : catalogIndex >= 0
                       ? pic(catalogIndex)
-                      : `<div class="pic" role="img" aria-label="${safeText(item.title)}" style="background-image:linear-gradient(135deg,rgba(21,43,53,.1),rgba(21,43,53,.24)),url(https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=1000&q=85)">`;
+                      : `<div class="pic" role="img" aria-label="${safeText(item.title)}" style="background-image:linear-gradient(135deg,rgba(21,43,53,.1),rgba(21,43,53,.24)),url(assets/homestay.jpg)">`;
                 return `<article class="card">${photo}<span class="tagc">${safeText(item.state)}${exact.length ? " · At your destination" : " · Nearby in this state"}</span></div><div class="cb"><h3>${safeText(item.title)}</h3><small>📍 ${safeText(item.destination)} · ${safeText(item.unit || "per room/night")}</small><p>${safeText(item.description)}</p><div class="bt"><div><span class="price">${inr(amount)}</span><small>${inr(Number(item.price))} per room, night</small></div>${btn(tripItem)}</div></div></article>`;
               })
               .join("")

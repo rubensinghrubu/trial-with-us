@@ -71,7 +71,8 @@
           const key = String(e[4] ?? i),
             quantity = st.gear[key] || st.gear[i] || 0;
           const description = e[3] ? `<p>${safeText(e[3])}</p>` : "";
-          return `<article class="card"><div class="gi">${safeText(e[2])}</div><div class="cb"><h3>${safeText(e[0])}</h3><small>${inr(e[1])} per day</small>${description}<div class="bt"><div class="step"><button data-g="${safeText(key)}" data-s="-1" aria-label="Fewer">−</button><b>${quantity}</b><button data-g="${safeText(key)}" data-s="1" aria-label="More">+</button></div><b>${inr(e[1] * quantity * st.gd)}</b></div></div></article>`;
+          const imageUrl = twuResolveImageUrl(e[5] || "travelling-gear.jpg", "travelling-gear.jpg");
+          return `<article class="card"><div class="pic catalog-photo" role="img" aria-label="${safeText(e[0])}" style="background-image:linear-gradient(135deg,rgba(21,43,53,.14),rgba(21,43,53,.42)),url(&quot;${safeText(imageUrl)}&quot;)"><span class="catalog-photo-icon" aria-hidden="true">${safeText(e[2])}</span></div><div class="cb"><h3>${safeText(e[0])}</h3><small>${inr(e[1])} per day</small>${description}<div class="bt"><div class="step"><button data-g="${safeText(key)}" data-s="-1" aria-label="Fewer">−</button><b>${quantity}</b><button data-g="${safeText(key)}" data-s="1" aria-label="More">+</button></div><b>${inr(e[1] * quantity * st.gd)}</b></div></div></article>`;
         }).join("");
         $("#gt").textContent = t.p
           ? `${inr(t.p)} for ${st.gd} day${st.gd > 1 ? "s" : ""}`
@@ -155,6 +156,7 @@
               item.emoji || "🎒",
               item.description || "",
               String(item.catalog_key || item.id || `remote-gear-${index}`),
+              item.image_url || "assets/travelling-gear.jpg",
             ]),
           );
           save();
