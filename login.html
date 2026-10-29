@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Sign in · Trail With Us</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
@@ -18,14 +18,14 @@
         place-items: center;
         padding: 36px 18px;
         overflow: hidden;
-        background: #010736;
+        background: #152b35;
       }
       .auth-slideshow {
         position: absolute;
         inset: 0;
         z-index: -2;
         overflow: hidden;
-        background: #010736;
+        background: #152b35;
       }
       .auth-slide {
         position: absolute;
@@ -38,19 +38,19 @@
         will-change: opacity, transform;
       }
       .auth-slide:nth-child(1) {
-        background-image: url("assets/slideshow1.jpg");
+        background-image: url("https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1400&q=85");
         animation-delay: 0s;
       }
       .auth-slide:nth-child(2) {
-        background-image: url("assets/slideshow2.jpg");
+        background-image: url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=85");
         animation-delay: 6s;
       }
       .auth-slide:nth-child(3) {
-        background-image: url("assets/slideshow3.jpg");
+        background-image: url("https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1400&q=85");
         animation-delay: 12s;
       }
       .auth-slide:nth-child(4) {
-        background-image: url("assets/slideshow4.jpg");
+        background-image: url("https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1400&q=85");
         animation-delay: 18s;
       }
       .auth-slideshow:after {
@@ -59,9 +59,9 @@
         inset: 0;
         background: linear-gradient(
           115deg,
-          rgba(1, 7, 54, 0.68),
-          rgba(1, 7, 54, 0.3) 55%,
-          rgba(1, 7, 54, 0.55)
+          rgba(14, 32, 40, 0.76),
+          rgba(14, 32, 40, 0.26) 55%,
+          rgba(14, 32, 40, 0.58)
         );
       }
       @keyframes authCrossfade {
@@ -95,9 +95,11 @@
           inset 0 1px 0 rgba(255, 255, 255, 0.2);
       }
       .auth-card .logo {
-        display: inline-block;
-        background: rgba(252, 241, 208, 0.92);
-        color: #010736;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: transparent;
+        color: #fffdf8;
       }
       .auth-card h1 {
         font-size: clamp(2rem, 7vw, 3rem);
@@ -136,15 +138,15 @@
         border: 0;
         border-radius: 9px;
         background: transparent;
-        color: #010736;
+        color: #152b35;
         cursor: pointer;
         padding: 7px;
       }
       .auth-eye:hover {
-        background: rgba(1, 7, 54, 0.08);
+        background: rgba(25, 61, 43, 0.08);
       }
       .auth-eye:focus-visible {
-        outline: 2px solid #22396f;
+        outline: 2px solid #e97951;
         outline-offset: 2px;
       }
       .auth-eye svg {
@@ -215,7 +217,7 @@
         padding: 10px 12px;
         border-radius: 10px;
         background: rgba(255, 255, 255, 0.94);
-        color: #010736;
+        color: #152b35;
         margin-top: 14px;
         display: none;
       }

@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Safety | Trail With Us</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="assets/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css" />
     <style>
       .safety-brief {
@@ -35,7 +35,7 @@
   <body
     data-page="safety"
     data-title="Safety"
-    data-sub="Track your route and keep emergency contacts close."
+    data-sub="Track your GPS location, check weather risk signals, mark personal risk zones and keep emergency contacts close. This is not an official emergency-alert service."
     data-img="safety"
   >
     <section class="blk">
@@ -62,6 +62,23 @@
             <div><small>Accuracy</small><b id="ac">–</b></div>
             <div><small>Distance</small><b id="ds">0 m</b></div>
             <div><small>Status</small><b id="stt">Off</b></div>
+          </div>
+          <div class="risk-monitor-card">
+            <div class="risk-monitor-head"><div><p class="eyebrow">LIVE CHECKS</p><h3>Route risk monitor</h3></div><button type="button" class="btn alt sm" id="enable-risk-notifications">Enable alerts</button></div>
+            <div id="weather-status" class="weather-status" role="status" aria-live="polite">Weather checks start after GPS tracking is enabled. Your coordinates are sent to Open-Meteo for nearby current conditions. These are advisory signals, not official warnings.</div>
+            <div id="risk-alerts" class="risk-alerts" role="alert" aria-live="assertive"><p>No route-zone alerts yet. Add a personal risk zone below to receive a proximity warning while tracking.</p></div>
+          </div>
+          <div class="risk-zone-panel card">
+            <p class="eyebrow">MAP OVERLAYS</p>
+            <h3>Personal risk zones</h3>
+            <p class="safety-brief">Click the map to fill coordinates or enter them manually. Zones are saved only in this browser; they are not an official hazard database.</p>
+            <form id="zone-form" class="risk-zone-form">
+              <label for="zone-label">Zone name<input id="zone-label" maxlength="80" required placeholder="e.g. Slippery section near camp" /></label>
+              <div class="risk-coords-row"><label for="zone-lat">Latitude<input id="zone-lat" type="number" min="-90" max="90" step="any" required placeholder="25.6035" /></label><label for="zone-lon">Longitude<input id="zone-lon" type="number" min="-180" max="180" step="any" required placeholder="94.1005" /></label></div>
+              <label for="zone-radius">Alert radius<select id="zone-radius"><option value="150">150 metres</option><option value="300" selected>300 metres</option><option value="500">500 metres</option><option value="1000">1 kilometre</option></select></label>
+              <button type="submit" class="btn sm">Add risk zone</button>
+            </form>
+            <ul id="risk-zone-list" class="risk-zone-list"></ul>
           </div>
         </div>
 
@@ -142,7 +159,7 @@
         </div>
       </div>
     </section>
-    <script src="assets/leaflet/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script src="app.js"></script>
@@ -164,7 +181,13 @@
         dem,
         dist = 0,
         last,
-        pos = null;
+        pos = null,
+        isDemo = false,
+        riskCircles = new Map(),
+        weatherLastAt = 0,
+        weatherBusy = false,
+        currentWeatherPoint = null,
+        warnedZones = new Set();
       if ($m) {
         const mapEl = $("#map"),
           str = L.tileLayer(
@@ -214,21 +237,154 @@
         PIN.forEach((p, i) =>
           L.circleMarker(p, {
             radius: 9,
-            color: "#010736",
-            fillColor: "#fcf1d0",
+            color: "#193d2b",
+            fillColor: "#f4f1e7",
             fillOpacity: 1,
             weight: 3,
           })
             .addTo($m)
             .bindPopup("<b>" + DEST[i] + "</b><br>" + STATE[i]),
         );
-        line = L.polyline([], { color: "#22396f", weight: 6 }).addTo($m);
+        line = L.polyline([], { color: "#477765", weight: 5 }).addTo($m);
         $m.fitBounds(PIN, { padding: [30, 30] });
         setTimeout(() => $m.invalidateSize(), 300);
         addEventListener("resize", () => $m.invalidateSize());
       } else
         $("#map").innerHTML =
-          '<p style="padding:30px;color:#fcf1d0">The map library did not load. Tracking still works.</p>';
+          '<p style="padding:30px;color:#193d2b">The map library did not load. Coordinate tracking and risk-zone forms still work.</p>';
+      const RISK_ZONE_KEY = "twu-risk-zones-v1";
+      const readRiskZones = () => {
+        try {
+          const rows = JSON.parse(localStorage.getItem(RISK_ZONE_KEY) || "[]");
+          return Array.isArray(rows) ? rows.filter((z) => Number.isFinite(Number(z.lat)) && Number.isFinite(Number(z.lon)) && Number.isFinite(Number(z.radius))) : [];
+        } catch (_) { return []; }
+      };
+      const writeRiskZones = (zones) => {
+        try { localStorage.setItem(RISK_ZONE_KEY, JSON.stringify(zones)); }
+        catch (_) { toast("Your browser could not save risk zones."); }
+      };
+      const distanceMeters = (aLat, aLon, bLat, bLon) => {
+        const rad = (n) => n * Math.PI / 180;
+        const dLat = rad(bLat - aLat), dLon = rad(bLon - aLon);
+        const x = Math.sin(dLat / 2) ** 2 + Math.cos(rad(aLat)) * Math.cos(rad(bLat)) * Math.sin(dLon / 2) ** 2;
+        return 6371000 * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+      };
+      function renderRiskZones() {
+        const zones = readRiskZones();
+        riskCircles.forEach((circle) => circle.remove());
+        riskCircles.clear();
+        if ($m) zones.forEach((zone) => {
+          const circle = L.circle([Number(zone.lat), Number(zone.lon)], {
+            radius: Number(zone.radius), color: "#b75f4b", fillColor: "#d77862", fillOpacity: 0.18, weight: 2, dashArray: "6 5",
+          }).addTo($m);
+          circle.bindPopup(`<b>${safeText(zone.label)}</b><br>Personal risk zone · ${Number(zone.radius)} m radius`);
+          riskCircles.set(zone.id, circle);
+        });
+        const list = $("#risk-zone-list");
+        list.innerHTML = zones.length ? zones.map((zone) => `<li><div><b>${safeText(zone.label)}</b><small>${Number(zone.lat).toFixed(4)}, ${Number(zone.lon).toFixed(4)} · ${Number(zone.radius)} m radius</small></div><button type="button" data-remove-zone="${safeText(zone.id)}" aria-label="Remove ${safeText(zone.label)}">Remove</button></li>`).join("") : `<li class="risk-zone-empty">No personal risk zones added yet.</li>`;
+      }
+      function publishRiskAlert(message, level = "warning") {
+        const box = $("#risk-alerts");
+        const icon = level === "danger" ? "⚠" : level === "info" ? "i" : "!";
+        box.innerHTML = `<div class="risk-alert risk-${level}"><span aria-hidden="true">${icon}</span><div><b>${level === "danger" ? "High caution" : level === "info" ? "Safety update" : "Route caution"}</b><p>${safeText(message)}</p></div></div>`;
+        if ("Notification" in window && Notification.permission === "granted") {
+          try { new Notification("Trail With Us safety update", { body: message }); } catch (_) {}
+        }
+      }
+      function checkRiskZones(la, lo) {
+        const zones = readRiskZones();
+        const activeNow = new Set();
+        zones.forEach((zone) => {
+          const distance = distanceMeters(la, lo, Number(zone.lat), Number(zone.lon));
+          if (distance <= Number(zone.radius)) {
+            activeNow.add(zone.id);
+            if (!warnedZones.has(zone.id)) {
+              warnedZones.add(zone.id);
+              publishRiskAlert(`You are about ${Math.max(0, Math.round(distance))} m from your saved risk zone “${zone.label}”. Pause and assess the route before proceeding.`);
+            }
+          }
+        });
+        [...warnedZones].forEach((id) => { if (!activeNow.has(id)) warnedZones.delete(id); });
+      }
+      function describeWeatherCode(code) {
+        if ([95, 96, 99].includes(code)) return "thunderstorm risk";
+        if ([45, 48].includes(code)) return "fog or reduced visibility";
+        if (code >= 80 && code <= 82) return "rain showers";
+        if (code >= 71 && code <= 77) return "snow or wintry conditions";
+        if (code >= 51 && code <= 67) return "rain or drizzle";
+        if (code >= 1 && code <= 3) return "cloudy conditions";
+        return "mostly clear conditions";
+      }
+      async function checkWeather(la, lo) {
+        const now = Date.now();
+        if (weatherBusy || now - weatherLastAt < 10 * 60 * 1000) return;
+        weatherBusy = true;
+        weatherLastAt = now;
+        currentWeatherPoint = [la, lo];
+        const weather = $("#weather-status");
+        weather.textContent = "Checking current weather near your location…";
+        try {
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(la)}&longitude=${encodeURIComponent(lo)}&current=temperature_2m,precipitation,rain,showers,weather_code,wind_speed_10m,wind_gusts_10m&timezone=auto`;
+          const response = await fetch(url, { cache: "no-store" });
+          if (!response.ok) throw new Error("Weather request failed");
+          const data = await response.json();
+          const c = data.current || {};
+          const code = Number(c.weather_code ?? c.weathercode ?? 0);
+          const wind = Number(c.wind_gusts_10m ?? c.wind_speed_10m ?? 0);
+          const precipitation = Number(c.precipitation ?? c.rain ?? c.showers ?? 0);
+          const label = describeWeatherCode(code);
+          const facts = `${label}; ${Number(c.temperature_2m ?? 0).toFixed(0)}°C; wind gusts ${Math.round(wind)} km/h; precipitation ${precipitation.toFixed(1)} mm.`;
+          if ([95, 96, 99].includes(code) || wind >= 65) {
+            weather.textContent = `Weather caution: ${facts} Forecast models can lag; seek shelter and check local official advisories.`;
+            publishRiskAlert(`Current weather data indicates ${facts} Avoid exposed ridges and do not continue into a storm. Check local official advisories.`, "danger");
+          } else if (code >= 51 || precipitation >= 2 || wind >= 45 || [45, 48].includes(code)) {
+            weather.textContent = `Weather caution: ${facts} Wet trails, poor visibility or gusts may raise risk.`;
+            publishRiskAlert(`Weather caution near your current location: ${facts} Reassess trail conditions and consult local guidance.`);
+          } else {
+            weather.textContent = `Current weather check: ${facts} No severe signal was detected by this check; that does not mean the route is safe.`;
+          }
+        } catch (_) {
+          weather.textContent = "Weather check unavailable. Do not assume conditions are safe; check official forecasts and local guides.";
+        } finally {
+          weatherBusy = false;
+        }
+      }
+      if ($m) {
+        $m.on("click", (event) => {
+          $("#zone-lat").value = event.latlng.lat.toFixed(6);
+          $("#zone-lon").value = event.latlng.lng.toFixed(6);
+          $("#zone-label").focus();
+        });
+      }
+      $("#zone-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const label = $("#zone-label").value.trim();
+        const lat = Number($("#zone-lat").value), lon = Number($("#zone-lon").value), radius = Number($("#zone-radius").value);
+        if (!label || !Number.isFinite(lat) || Math.abs(lat) > 90 || !Number.isFinite(lon) || Math.abs(lon) > 180) {
+          toast("Enter a zone name and valid coordinates."); return;
+        }
+        const zones = readRiskZones();
+        zones.push({ id: `zone-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, label: label.slice(0, 80), lat, lon, radius });
+        writeRiskZones(zones);
+        event.target.reset();
+        $("#zone-radius").value = "300";
+        renderRiskZones();
+        toast("Personal risk zone added to this browser.");
+      });
+      $("#risk-zone-list").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-remove-zone]");
+        if (!button) return;
+        writeRiskZones(readRiskZones().filter((zone) => zone.id !== button.dataset.removeZone));
+        warnedZones.delete(button.dataset.removeZone);
+        renderRiskZones();
+      });
+      $("#enable-risk-notifications").addEventListener("click", async () => {
+        if (!("Notification" in window)) { toast("Browser notifications are not supported here."); return; }
+        const permission = await Notification.requestPermission();
+        toast(permission === "granted" ? "Browser safety notifications enabled." : "Notifications were not enabled. On-page warnings still work.");
+      });
+      renderRiskZones();
+
       function upd(la, lo, ac) {
         pos = { la, lo };
         $("#la").textContent = la.toFixed(5);
@@ -247,8 +403,8 @@
           if (!mk) {
             mk = L.circleMarker([la, lo], {
               radius: 11,
-              color: "#010736",
-              fillColor: "#fcf1d0",
+              color: "#193d2b",
+              fillColor: "#f4f1e7",
               fillOpacity: 1,
               weight: 5,
             }).addTo($m);
@@ -258,6 +414,8 @@
             $m.panTo([la, lo]);
           }
         }
+        checkRiskZones(la, lo);
+        if (!isDemo) checkWeather(la, lo);
       }
       function stopAll() {
         wid != null && navigator.geolocation.clearWatch(wid);
@@ -267,6 +425,7 @@
       }
       $("#go").onclick = () => {
         stopAll();
+        isDemo = false;
         if (!navigator.geolocation)
           return toast("GPS not available here. Try Demo trek.");
         $("#stt").textContent = "Locating";
@@ -281,6 +440,7 @@
       };
       $("#demo").onclick = () => {
         stopAll();
+        isDemo = true;
         pts = [];
         dist = 0;
         last = null;
@@ -304,8 +464,8 @@
         pos ? `https://maps.google.com/?q=${pos.la},${pos.lo}` : "";
       $("#cp").onclick = () => {
         if (!pos) return toast("Start tracking first");
-        navigator.clipboard && navigator.clipboard.writeText(link());
-        toast("Location link copied");
+        if (!navigator.clipboard) { toast("Copy is unavailable in this browser. Use the location coordinates above."); return; }
+        navigator.clipboard.writeText(link()).then(() => toast("Location link copied")).catch(() => toast("Copy failed. Use the coordinates above."));
       };
       /* contacts */
       const rc = () => {
@@ -420,15 +580,15 @@
         left: 12px;
         bottom: 28px;
         z-index: 500;
-        background: #fcf1d0;
-        color: #010736;
+        background: #f4f1e7;
+        color: #193d2b;
         padding: 6px 12px;
         border-radius: 10px;
         font-size: 0.85rem;
       }
       #map {
         background:
-          #0d1c42
+          #244d37
             linear-gradient(rgba(252, 241, 208, 0.08) 1px, transparent 1px) 0
             0/40px 40px,
           linear-gradient(90deg, rgba(252, 241, 208, 0.08) 1px, transparent 1px)

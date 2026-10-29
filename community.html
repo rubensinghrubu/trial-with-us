@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#193d2b" />
+    <title>Trekker Community | Trail With Us</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body
+    data-page="community"
+    data-title="Trekker community"
+    data-sub="Ask trail questions, share first-hand tips and find people planning a similar journey."
+    data-img="valley"
+  >
+    <main class="community-main w">
+      <section class="community-intro">
+        <div>
+          <p class="eyebrow">LOCAL EXPERIENCE, SHARED</p>
+          <h2 class="sec-h">The best trail advice comes from people who walked it.</h2>
+          <p>Start a question, leave a useful trail note, or share a planned trek to connect with potential travel buddies. Keep personal contact details private in public posts.</p>
+        </div>
+        <div class="community-stat-card">
+          <span class="community-stat-icon" aria-hidden="true">✳</span>
+          <b>Ask. Learn. Trek together.</b>
+          <small>Community posts and replies are shared through your Supabase project after the included SQL migration is run.</small>
+        </div>
+      </section>
+
+      <div class="community-layout">
+        <aside class="community-compose-card">
+          <div class="community-card-heading">
+            <p class="eyebrow">YOUR CONTRIBUTION</p>
+            <h2>Start a discussion</h2>
+            <p>Questions, first-hand tips and buddy requests are welcome.</p>
+          </div>
+          <form id="community-form" class="community-form">
+            <label for="post-type">What are you sharing?
+              <select id="post-type" name="post_type" required>
+                <option value="question">Ask a question</option>
+                <option value="tip">Share a trail tip</option>
+                <option value="buddy">Find a trek buddy</option>
+              </select>
+            </label>
+            <label for="post-title">Title
+              <input id="post-title" name="title" maxlength="120" required placeholder="e.g. Is the Nongriat trek manageable in one day?" />
+            </label>
+            <label for="post-body">Details
+              <textarea id="post-body" name="body" rows="5" maxlength="3000" required placeholder="Share the context so other travellers can give useful answers."></textarea>
+            </label>
+            <div class="community-form-row">
+              <label for="post-state">State
+                <select id="post-state" name="state"><option value="">Any / not specified</option></select>
+              </label>
+              <label for="post-destination">Destination
+                <select id="post-destination" name="destination"><option value="">Any / not specified</option></select>
+              </label>
+            </div>
+            <div class="community-form-row" id="buddy-fields" hidden>
+              <label for="post-date">Planned trek date
+                <input id="post-date" name="travel_date" type="date" />
+              </label>
+              <label for="post-level">Experience level
+                <select id="post-level" name="experience_level">
+                  <option value="Any">Any level</option>
+                  <option value="Beginner">Beginner</option>
+                  <option value="Some experience">Some experience</option>
+                  <option value="Experienced">Experienced</option>
+                </select>
+              </label>
+            </div>
+            <button class="btn community-submit" type="submit">Post to the community <span aria-hidden="true">↗</span></button>
+            <p class="community-form-note" id="community-form-note">You need to sign in to publish or reply. Never post your phone number, home address or live location publicly.</p>
+          </form>
+          <a class="community-login-link" href="login.html">Log in / create an account</a>
+        </aside>
+
+        <section class="community-feed-section" aria-labelledby="community-feed-title">
+          <div class="community-feed-heading">
+            <div>
+              <p class="eyebrow">FROM THE TRAIL</p>
+              <h2 id="community-feed-title">Community board</h2>
+              <p>Helpful answers and practical experience from other travellers.</p>
+            </div>
+            <button type="button" id="community-refresh" class="btn alt sm">Refresh</button>
+          </div>
+          <div class="community-filters" aria-label="Filter community posts">
+            <button type="button" class="community-filter on" data-filter="all">All posts</button>
+            <button type="button" class="community-filter" data-filter="question">Questions</button>
+            <button type="button" class="community-filter" data-filter="tip">Trail tips</button>
+            <button type="button" class="community-filter" data-filter="buddy">Trek buddies</button>
+          </div>
+          <label class="community-search-label" for="community-search">Search posts
+            <input id="community-search" type="search" placeholder="Search by trail, destination or topic" />
+          </label>
+          <div id="community-status" class="community-status" role="status" aria-live="polite">Loading community posts…</div>
+          <div id="community-posts" class="community-posts"></div>
+        </section>
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+    <script src="community.js"></script>
+    <script src="motion.js" defer></script>
+  </body>
+</html>

@@ -5,28 +5,51 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Stays | Trail With Us</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body
-    data-page="stays"
-    data-title="Stays"
-    data-sub="Browse verified accommodation listings as they are added. All requests require provider availability confirmation."
-    data-img="homestay"
-  >
-    <div class="w">
-      <div class="ctl">
-        <label>State<select data-k="state"></select></label
-        ><label>Place to visit<select data-k="dest"></select></label
-        ><label>Nights<select data-k="nights"></select></label
-        ><label>Travellers<select data-k="trav"></select></label>
+  <body data-page="stays">
+    <section class="stay-hero">
+      <div class="w stay-hero-inner">
+        <div class="stay-hero-copy">
+          <p class="eyebrow">LOCAL STAYS · BETTER MORNINGS</p>
+          <h1>Find your <em>place to pause.</em></h1>
+          <p>From family-run homestays to trail-side hideaways, find a comfortable base for the places you came to see.</p>
+        </div>
+        <div class="stay-hero-note">
+          <span class="stay-note-index">A BETTER WAY TO STAY <b>↗</b></span>
+          <p>Stay close to the landscape — and the people who know it best.</p>
+          <span class="stay-note-foot">NORTHEAST INDIA · LOCALLY CONNECTED</span>
+        </div>
       </div>
-    </div>
-    <section style="padding-bottom: 90px">
-      <div class="w"><div class="grid" id="l"></div></div>
     </section>
+    <main class="stay-explorer">
+      <section class="stay-search-section">
+        <div class="w">
+          <div class="stay-search-heading">
+            <div><p class="eyebrow">01 / MAKE IT YOURS</p><h2>Choose your basecamp.</h2></div>
+            <p>Set the destination and length of your stay to explore available options.</p>
+          </div>
+          <div class="ctl stay-controls" aria-label="Filter stays by destination and group size">
+            <label>State<select data-k="state"></select></label>
+            <label>Place to visit<select data-k="dest"></select></label>
+            <label>Nights<select data-k="nights"></select></label>
+            <label>Travellers<select data-k="trav"></select></label>
+          </div>
+        </div>
+      </section>
+      <section class="stay-results-area">
+        <div class="w">
+          <div class="stay-results-head">
+            <div><p class="eyebrow">LOCAL PLACES TO CALL HOME</p><h2>Stays for your next stop.</h2></div>
+            <span class="stay-results-note">Availability is confirmed by each host.</span>
+          </div>
+          <div class="grid" id="l" aria-live="polite"></div>
+        </div>
+      </section>
+    </main>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script src="app.js"></script>
@@ -42,7 +65,7 @@
             .sort((a, b) => (b.i === di()) - (a.i === di()));
           $("#l").innerHTML = available.length
             ? available.map((x) => stayCard(x.h, x.i)).join("")
-            : `<div class="empty-state"><span>🏡</span><h2>Stay listings are not available here yet</h2><p>We do not have a property listing for ${safeText(st.dest)} in this catalogue. Browse a package or check another destination.</p><a class="btn" href="packages.html">Browse packages</a></div>`;
+            : `<div class="empty-state"><span>🏡</span><h2>No stays listed for this stop yet</h2><p>We don’t have a published property for ${safeText(st.dest)} in this catalogue. Explore a curated package or try another nearby destination.</p><a class="btn" href="packages.html">Browse packages</a></div>`;
           return;
         }
         const state =
@@ -72,16 +95,15 @@
                 const imageUrl = String(item.image_url || "").trim();
                 const photo =
                   imageUrl &&
-                  (imageUrl.startsWith("assets/") ||
-                    /^https:\/\//i.test(imageUrl))
+                  (/^https:\/\//i.test(imageUrl))
                     ? `<div class="pic" role="img" aria-label="${safeText(item.title)}" style="background-image:url(&quot;${safeText(imageUrl)}&quot;)">`
                     : catalogIndex >= 0
                       ? pic(catalogIndex)
-                      : `<div class="pic" role="img" aria-label="${safeText(item.title)}" style="background-image:url(assets/homestay.jpg)">`;
+                      : `<div class="pic" role="img" aria-label="${safeText(item.title)}" style="background-image:linear-gradient(135deg,rgba(21,43,53,.1),rgba(21,43,53,.24)),url(https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=1000&q=85)">`;
                 return `<article class="card">${photo}<span class="tagc">${safeText(item.state)}${exact.length ? " · At your destination" : " · Nearby in this state"}</span></div><div class="cb"><h3>${safeText(item.title)}</h3><small>📍 ${safeText(item.destination)} · ${safeText(item.unit || "per room/night")}</small><p>${safeText(item.description)}</p><div class="bt"><div><span class="price">${inr(amount)}</span><small>${inr(Number(item.price))} per room, night</small></div>${btn(tripItem)}</div></div></article>`;
               })
               .join("")
-          : `<div class="empty-state"><span>🏡</span><h2>No published stays for ${safeText(state)} yet</h2><p>Try another destination or browse a curated package.</p><a class="btn" href="packages.html">Browse packages</a></div>`;
+          : `<div class="empty-state"><span>🏡</span><h2>No published stays for ${safeText(state)} just yet</h2><p>Try another destination or browse a curated package to plan the rest of your route.</p><a class="btn" href="packages.html">Browse packages</a></div>`;
       }
       bind(renderStays);
       (async () => {

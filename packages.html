@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Packages | Trail With Us</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
@@ -50,7 +50,7 @@
         );
       const packagePhoto = (row, index) => {
         const url = String(row.image_url || "").trim();
-        if (url.startsWith("assets/") || /^https:\/\//i.test(url))
+        if (/^https:\/\//i.test(url))
           return `<div class="pic" role="img" aria-label="${packageEscape(row.title)}" style="background-image:url(&quot;${packageEscape(url)}&quot;)">`;
         return pic(index);
       };

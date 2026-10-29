@@ -62,7 +62,7 @@
         "Suggested Dzükou itinerary with guide, stay and return transport planning. Price is indicative; providers, permits and availability must be confirmed.",
       price: 9800,
       duration_days: 3,
-      image_url: "assets/valley.jpg",
+      image_url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1100&q=85",
     },
     {
       title: "Roots and Rivers",
@@ -70,7 +70,7 @@
         "Suggested Nongriat trek, Dawki boat ride and Shillong transfer itinerary. Price is indicative; providers and availability must be confirmed.",
       price: 18500,
       duration_days: 5,
-      image_url: "assets/bridge.jpg",
+      image_url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1100&q=85",
     },
     {
       title: "Wild Assam",
@@ -78,7 +78,7 @@
         "Suggested Kaziranga safaris and Majuli river-island itinerary. Price is indicative; safari slots, permits and transport must be confirmed.",
       price: 24000,
       duration_days: 4,
-      image_url: "assets/boats.jpg",
+      image_url: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1100&q=85",
     },
     {
       title: "Tawang and Ziro Loop",
@@ -86,7 +86,7 @@
         "Suggested monastery circuit and Apatani valley itinerary. Price is indicative; local providers and availability must be confirmed.",
       price: 36000,
       duration_days: 7,
-      image_url: "assets/road.jpg",
+      image_url: "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1100&q=85",
     },
   ];
   if (!client) {

@@ -1,6 +1,26 @@
 const $ = (s) => document.querySelector(s),
   $$ = (s) => [...document.querySelectorAll(s)],
   inr = (n) => "₹" + Math.round(n).toLocaleString("en-IN");
+const TWU_STATE_PHOTOS = {
+  "Arunachal Pradesh": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1100&q=85",
+  "Assam": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1100&q=85",
+  "Manipur": "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1100&q=85",
+  "Meghalaya": "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1100&q=85",
+  "Mizoram": "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1100&q=85",
+  "Nagaland": "https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1100&q=85",
+  "Sikkim": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1100&q=85",
+  "Tripura": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1100&q=85"
+};
+const TWU_BANNER_PHOTOS = {
+  hikers: TWU_STATE_PHOTOS["Sikkim"], valley: TWU_STATE_PHOTOS["Arunachal Pradesh"],
+  bridge: TWU_STATE_PHOTOS["Meghalaya"], boats: TWU_STATE_PHOTOS["Manipur"],
+  falls: TWU_STATE_PHOTOS["Meghalaya"], road: TWU_STATE_PHOTOS["Nagaland"],
+  gear: "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1100&q=85",
+  "homestay": "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=1100&q=85",
+  "travel-packages": "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1100&q=85",
+  "travelling-gear": "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1100&q=85",
+  "safety": "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1100&q=85"
+};
 const DESTINATION_CATALOG = [
   {
     place: "Dzükou Valley",
@@ -372,7 +392,7 @@ const STATE_FEATURES = [
   {
     name: "Arunachal Pradesh",
     hero: "Tawang",
-    image: "states/arunachal-pradesh/arunachal pradesh",
+    image: TWU_STATE_PHOTOS["Arunachal Pradesh"],
     places: [
       "Tawang",
       "Ziro Valley",
@@ -386,7 +406,7 @@ const STATE_FEATURES = [
   {
     name: "Assam",
     hero: "Kaziranga National Park",
-    image: "states/assam/assam",
+    image: TWU_STATE_PHOTOS["Assam"],
     places: [
       "Kaziranga National Park",
       "Majuli Island",
@@ -400,7 +420,7 @@ const STATE_FEATURES = [
   {
     name: "Manipur",
     hero: "Loktak Lake",
-    image: "states/manipur/manipur",
+    image: TWU_STATE_PHOTOS["Manipur"],
     places: [
       "Loktak Lake",
       "Keibul Lamjao National Park",
@@ -412,7 +432,7 @@ const STATE_FEATURES = [
   {
     name: "Meghalaya",
     hero: "Living Root Bridges",
-    image: "states/meghalaya/meghalaya",
+    image: TWU_STATE_PHOTOS["Meghalaya"],
     places: [
       "Living Root Bridges",
       "Dawki & Mawlynnong",
@@ -426,7 +446,7 @@ const STATE_FEATURES = [
   {
     name: "Mizoram",
     hero: "Aizawl",
-    image: "states/mizoram/mizoram",
+    image: TWU_STATE_PHOTOS["Mizoram"],
     places: [
       "Aizawl",
       "Reiek",
@@ -439,7 +459,7 @@ const STATE_FEATURES = [
   {
     name: "Nagaland",
     hero: "Dzükou Valley",
-    image: "states/nagaland/nagaland",
+    image: TWU_STATE_PHOTOS["Nagaland"],
     places: [
       "Dzükou Valley",
       "Kohima",
@@ -452,7 +472,7 @@ const STATE_FEATURES = [
   {
     name: "Sikkim",
     hero: "Gangtok",
-    image: "states/sikkim/sikkim",
+    image: TWU_STATE_PHOTOS["Sikkim"],
     places: [
       "Gangtok",
       "Tsomgo (Changu) Lake",
@@ -466,7 +486,7 @@ const STATE_FEATURES = [
   {
     name: "Tripura",
     hero: "Ujjayanta Palace, Agartala",
-    image: "states/tripura/tripura",
+    image: TWU_STATE_PHOTOS["Tripura"],
     places: [
       "Ujjayanta Palace, Agartala",
       "Neermahal",
@@ -704,7 +724,7 @@ async function loadPublishedPlaces() {
         place.place = name;
         place.state = state;
         if (row.description) place.description = row.description;
-        // if (normalizedImage) place.image = normalizedImage;
+        if (normalizedImage) place.image = normalizedImage;
         DEST[index] = name;
         STATE[index] = state;
         DIMG[index] = place.image;
@@ -884,32 +904,28 @@ function refreshFeaturedGuideCards() {
 /* illustrations */
 function avatar(i, z = 80) {
   const sk = ["#f2cba8", "#dfa97e", "#c68863", "#a86f4a"][i % 4],
-    hr = ["#010736", "#2a160c", "#3b2a1e", "#14143a"][(i * 3 + 1) % 4],
-    sh = ["#22396f", "#fcf1d0", "#0d1c42", "#6c84bf"][(i + 1) % 4],
-    bg = ["#fcf1d0", "#22396f", "#6c84bf", "#0d1c42"][i % 4],
+    hr = ["#193d2b", "#2a160c", "#3b2a1e", "#14143a"][(i * 3 + 1) % 4],
+    sh = ["#477765", "#f4f1e7", "#244d37", "#6c84bf"][(i + 1) % 4],
+    bg = ["#f4f1e7", "#477765", "#6c84bf", "#244d37"][i % 4],
     k = i % 3;
-  return `<svg viewBox="0 0 100 100" width="${z}" height="${z}" role="img" aria-label="Guide portrait placeholder"><rect width="100" height="100" fill="${bg}"/>${k == 2 ? `<path d="M26 40q0-26 24-26t24 26v34H26z" fill="${hr}"/>` : ""}<path d="M8 100c0-24 18-33 42-33s42 9 42 33z" fill="${sh}"/><rect x="43" y="52" width="14" height="18" fill="${sk}"/><ellipse cx="50" cy="42" rx="17" ry="20" fill="${sk}"/>${k == 0 ? `<path d="M31 38q0-22 19-22t19 22q-19-9-38 0z" fill="${sh === "#fcf1d0" ? "#22396f" : hr}"/><rect x="30" y="34" width="40" height="6" fill="${bg == "#fcf1d0" ? "#22396f" : "#fcf1d0"}"/>` : k == 1 ? `<path d="M32 40q-2-22 18-22t18 22q-6-10-18-10t-18 10z" fill="${hr}"/>` : `<path d="M33 40q0-20 17-20t17 20q-17-8-34 0z" fill="${hr}"/>`}<circle cx="43" cy="44" r="2" fill="#010736"/><circle cx="57" cy="44" r="2" fill="#010736"/><path d="M43 52q7 6 14 0" stroke="#010736" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`;
+  return `<svg viewBox="0 0 100 100" width="${z}" height="${z}" role="img" aria-label="Guide portrait placeholder"><rect width="100" height="100" fill="${bg}"/>${k == 2 ? `<path d="M26 40q0-26 24-26t24 26v34H26z" fill="${hr}"/>` : ""}<path d="M8 100c0-24 18-33 42-33s42 9 42 33z" fill="${sh}"/><rect x="43" y="52" width="14" height="18" fill="${sk}"/><ellipse cx="50" cy="42" rx="17" ry="20" fill="${sk}"/>${k == 0 ? `<path d="M31 38q0-22 19-22t19 22q-19-9-38 0z" fill="${sh === "#f4f1e7" ? "#477765" : hr}"/><rect x="30" y="34" width="40" height="6" fill="${bg == "#f4f1e7" ? "#477765" : "#f4f1e7"}"/>` : k == 1 ? `<path d="M32 40q-2-22 18-22t18 22q-6-10-18-10t-18 10z" fill="${hr}"/>` : `<path d="M33 40q0-20 17-20t17 20q-17-8-34 0z" fill="${hr}"/>`}<circle cx="43" cy="44" r="2" fill="#193d2b"/><circle cx="57" cy="44" r="2" fill="#193d2b"/><path d="M43 52q7 6 14 0" stroke="#193d2b" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`;
 }
 function scene(i) {
   const c = [
-    ["#22396f", "#0d1c42", "#010736"],
-    ["#6c84bf", "#22396f", "#0d1c42"],
-    ["#fcf1d0", "#22396f", "#010736"],
+    ["#477765", "#244d37", "#193d2b"],
+    ["#6c84bf", "#477765", "#244d37"],
+    ["#f4f1e7", "#477765", "#193d2b"],
   ][i % 3];
-  return `<svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice"><rect width="400" height="260" fill="${c[0]}"/><circle cx="${90 + i * 50}" cy="70" r="34" fill="#fcf1d0"/><path d="M0 190l70-80 60 60 80-110 90 120 100-70v150H0z" fill="${c[1]}"/><path d="M0 220l90-60 70 40 90-70 150 90v40H0z" fill="${c[2]}"/><path d="M0 250q100-20 200 0t200 0v10H0z" fill="#fcf1d0" opacity=".8"/></svg>`;
+  return `<svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice"><rect width="400" height="260" fill="${c[0]}"/><circle cx="${90 + i * 50}" cy="70" r="34" fill="#f4f1e7"/><path d="M0 190l70-80 60 60 80-110 90 120 100-70v150H0z" fill="${c[1]}"/><path d="M0 220l90-60 70 40 90-70 150 90v40H0z" fill="${c[2]}"/><path d="M0 250q100-20 200 0t200 0v10H0z" fill="#f4f1e7" opacity=".8"/></svg>`;
 }
 const pic = (i, cls = "pic") => {
   const image = DIMG[i];
   const imageUrl =
     typeof image === "string" && /^https:\/\//i.test(image)
       ? image
-      : image
-        ? `assets/${String(image)
-            .replace(/^assets\//, "")
-            .replace(/\.jpg$/i, "")}.jpg`
-        : "";
+      : TWU_STATE_PHOTOS[STATE[i]] || TWU_STATE_PHOTOS["Meghalaya"];
   return imageUrl
-    ? `<div class="${cls}" role="img" aria-label="${safeText(DEST[i])}" style="background-image:url(&quot;${safeText(imageUrl)}&quot;)">`
+    ? `<div class="${cls}" role="img" aria-label="${safeText(DEST[i])}" style="background-image:linear-gradient(135deg,rgba(25,61,43,.12),rgba(25,61,43,.34)),url(&quot;${safeText(imageUrl)}&quot;)">`
     : `<div class="${cls}" role="img" aria-label="${safeText(DEST[i])}">${scene(i)}`;
 };
 /* components */
@@ -987,14 +1003,15 @@ function gearTot() {
 }
 /* layout */
 const LINKS = [
-  ["destinations", "Destinations"],
-  ["guides", "Guides"],
-  ["stays", "Stays"],
-  ["rides", "Rides"],
-  ["gear", "Gear"],
-  ["packages", "Packages"],
+  ["destinations", "Explore"],
+  ["guides", "Local guides"],
+  ["stays", "Hill homestays"],
+  ["rides", "Local transport"],
+  ["gear", "Trek gear"],
+  ["packages", "Trip packages"],
   ["gallery", "Gallery"],
-  ["safety", "Safety"],
+  ["safety", "GPS & safety"],
+  ["community", "Trekker community"],
 ];
 const IC = (p) =>
   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
@@ -1051,9 +1068,9 @@ function layout() {
   const b = document.body.dataset;
   document.body.insertAdjacentHTML(
     "afterbegin",
-    `<header class="top"><div class="w"><a class="logo" href="index.html">Trail With Us</a><nav id="nv">${LINKS.map((l) => `<a href="${l[0]}.html" class="${b.page == l[0] ? "on" : ""}">${l[1]}</a>`).join("")}</nav><div class="top-actions" style="display:flex;gap:10px;align-items:center"><button class="burger" id="bg" aria-label="Open navigation menu" aria-expanded="false">☰</button><button class="mybtn" id="mt" aria-label="Open my trip" hidden>${BAG}<span>My trip</span><b id="cc">0</b></button><div class="profile-menu" id="profile-menu" hidden><button class="profile-trigger" id="profile-trigger" aria-label="Open profile menu" title="Profile"><span class="profile-avatar" id="profile-avatar" aria-hidden="true">U</span><span id="profile-label" class="profile-label">Profile</span><span class="profile-chevron" aria-hidden="true">▾</span></button><div class="profile-dropdown" id="profile-dropdown"><a href="login.html" id="profile-login">Log in / Create account</a><a href="account.html" id="profile-account" hidden>Edit profile</a><a href="dashboard-user.html" id="profile-dashboard" hidden>Travel dashboard</a><button type="button" id="profile-logout" hidden>Log out</button></div></div></div></div></header>` +
+    `<header class="top"><div class="w"><a class="logo" href="index.html">Trail With Us</a><nav id="nv">${LINKS.map((l) => `<a href="${l[0]}.html" class="${b.page == l[0] ? "on" : ""}">${l[1]}</a>`).join("")}<span class="nav-indicator" aria-hidden="true"></span></nav><div class="top-actions" style="display:flex;gap:10px;align-items:center"><button class="burger" id="bg" aria-label="Open navigation menu" aria-expanded="false"><span></span><span></span><span></span></button><button class="mybtn" id="mt" aria-label="Open my trip" hidden>${BAG}<span>My trip</span><b id="cc">0</b></button><div class="profile-menu" id="profile-menu" hidden><button class="profile-trigger" id="profile-trigger" aria-label="Open profile menu" title="Profile"><span class="profile-avatar" id="profile-avatar" aria-hidden="true">U</span><span id="profile-label" class="profile-label">Profile</span><span class="profile-chevron" aria-hidden="true">▾</span></button><div class="profile-dropdown" id="profile-dropdown"><a href="login.html" id="profile-login">Log in / Create account</a><a href="account.html" id="profile-account" hidden>Edit profile</a><a href="dashboard-user.html" id="profile-dashboard" hidden>Travel dashboard</a><button type="button" id="profile-logout" hidden>Log out</button></div></div></div></div></header>` +
       (b.title
-        ? `<div class="ban" style="background-image:url(assets/${b.img}.jpg)"><div class="w"><h1>${b.title}</h1><p>${b.sub}</p></div></div>`
+        ? `<div class="ban" style="background-image:linear-gradient(100deg,rgba(12,30,36,.84),rgba(12,30,36,.26)),url(&quot;${TWU_BANNER_PHOTOS[b.img] || TWU_BANNER_PHOTOS.valley}&quot;)"><div class="w"><p class="eyebrow">TRAIL WITH US · NORTHEAST INDIA</p><h1>${b.title}</h1><p>${b.sub}</p></div></div>`
         : ""),
   );
   document.body.insertAdjacentHTML(
@@ -1065,15 +1082,22 @@ function layout() {
       .map((l) => `<a href="${l[0]}.html">${l[1]}</a>`)
       .join(
         "",
-      )}</div><div><b>Explore and stay safe</b><a href="gallery.html">Gallery</a><a href="safety.html">GPS tracking</a><a href="safety.html#sos">SOS</a><a href="trip.html">My trip</a></div><div><b>Account</b><div id="footer-auth-links"><a href="login.html">Log in</a><a href="login.html?mode=signup">Create an account</a></div><a href="dashboard-user.html" id="footer-dashboard-link" hidden>Travel dashboard</a></div></div></div></footer>
+      )}</div><div><b>Explore and stay safe</b><a href="gallery.html">Gallery</a><a href="safety.html">GPS tracking & alerts</a><a href="safety.html#sos">SOS</a><a href="community.html">Trekker community</a><a href="trip.html">My trip</a></div><div><b>Account</b><div id="footer-auth-links"><a href="login.html">Log in</a><a href="login.html?mode=signup">Create an account</a></div><a href="dashboard-user.html" id="footer-dashboard-link" hidden>Travel dashboard</a></div></div></div></footer>
 <a class="fab" id="sosf" href="safety.html#sos" aria-label="Open emergency SOS tools">SOS</a><button class="fab" id="fab" aria-label="Open Chat With Us">${CHAT}</button>
-<div class="cw" id="cw"><h4>Chat With Us<small>Travel planning helper · quick suggestions</small><button type="button" class="chat-close" id="closeChat" aria-label="Close chat">×</button></h4><div class="msgs" id="ms"></div><div class="qs" id="qs"></div><form id="cf"><input id="ci" placeholder="Ask about permits, stays, gear" autocomplete="off"><button class="btn sm">Send</button></form></div><div class="toast" id="ts"></div><div class="ov" id="ov"></div><aside class="td" id="td" aria-label="My trip"></aside><div class="tile-modal" id="tile-modal" aria-hidden="true"><div class="tile-modal-backdrop" data-tile-close></div><section class="tile-modal-panel" role="dialog" aria-modal="true" aria-labelledby="tile-modal-title"><button type="button" class="tile-modal-close" id="tile-modal-close" aria-label="Close details">×</button><h2 id="tile-modal-title">Details</h2><div class="tile-modal-content" id="tile-modal-content"></div><div id="tile-modal-actions" class="tile-modal-actions"></div></section></div>`,
+<div class="cw" id="cw"><h4>Chat With Us<small>Travel planning helper · quick suggestions</small><button type="button" class="chat-close" id="closeChat" aria-label="Close chat">×</button></h4><div class="msgs" id="ms"></div><div class="qs" id="qs"></div><form id="cf"><input id="ci" placeholder="Ask about permits, stays, gear" autocomplete="off"><button class="btn sm">Send</button></form></div><div class="toast" id="ts"></div><div class="ov" id="ov"></div><aside class="td" id="td" aria-label="My trip"></aside><div class="tile-modal" id="tile-modal" aria-hidden="true"><div class="tile-modal-backdrop" data-tile-close></div><section class="tile-modal-panel" role="dialog" aria-modal="true" aria-labelledby="tile-modal-title"><button type="button" class="tile-modal-close" id="tile-modal-close" aria-label="Close details">×</button><h2 id="tile-modal-title">Details</h2><div class="tile-modal-content" id="tile-modal-content"></div><div id="tile-modal-actions" class="tile-modal-actions"></div></section></div>
+<nav class="mobile-tabbar" aria-label="Quick navigation">
+  <a href="index.html" class="${b.page === "home" ? "on" : ""}"><span aria-hidden="true">⌂</span><small>Home</small></a>
+  <a href="destinations.html" class="${b.page === "destinations" ? "on" : ""}"><span aria-hidden="true">⌖</span><small>Explore</small></a>
+  <a href="community.html" class="${b.page === "community" ? "on" : ""}"><span aria-hidden="true">◎</span><small>Community</small></a>
+  <a href="trip.html" class="${b.page === "trip" ? "on" : ""}"><span aria-hidden="true">♧</span><small>My trip</small></a>
+  <a href="login.html" class="${b.page === "login" ? "on" : ""}"><span aria-hidden="true">○</span><small>Account</small></a>
+</nav>`, 
   );
   const nv = $("#nv"),
     bg = $("#bg"),
     menu = (o) => {
       nv.classList.toggle("open", o);
-      bg.textContent = o ? "×" : "☰";
+      bg.classList.toggle("is-open", !!o);
       bg.setAttribute("aria-expanded", String(!!o));
       bg.setAttribute(
         "aria-label",
@@ -1081,6 +1105,42 @@ function layout() {
       );
       document.body.classList.toggle("nav-open", !!o);
     };
+  const navIndicator = nv.querySelector(".nav-indicator");
+  const updateNavIndicator = (target) => {
+    if (!navIndicator) return;
+    if (window.matchMedia("(max-width: 1240px)").matches) {
+      navIndicator.style.opacity = "0";
+      return;
+    }
+    const link = target && target.matches("a") ? target : nv.querySelector("a.on");
+    if (!link) {
+      navIndicator.style.opacity = "0";
+      return;
+    }
+    const navRect = nv.getBoundingClientRect();
+    const linkRect = link.getBoundingClientRect();
+    navIndicator.style.setProperty("--nav-indicator-x", `${linkRect.left - navRect.left}px`);
+    navIndicator.style.setProperty("--nav-indicator-width", `${linkRect.width}px`);
+    navIndicator.style.opacity = "1";
+  };
+  if (navIndicator) {
+    updateNavIndicator();
+    nv.addEventListener("pointerover", (event) => {
+      const link = event.target.closest("a");
+      if (link && nv.contains(link)) updateNavIndicator(link);
+    });
+    nv.addEventListener("pointerleave", () => updateNavIndicator());
+    nv.addEventListener("focusin", (event) => {
+      const link = event.target.closest("a");
+      if (link && nv.contains(link)) updateNavIndicator(link);
+    });
+    nv.addEventListener("focusout", (event) => {
+      if (!nv.contains(event.relatedTarget)) updateNavIndicator();
+    });
+    window.addEventListener("resize", () => updateNavIndicator(), { passive: true });
+    window.addEventListener("load", () => updateNavIndicator(), { once: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => updateNavIndicator());
+  }
   const profileTrigger = $("#profile-trigger"),
     profileDropdown = $("#profile-dropdown");
   const getSupabaseClient = () => {
@@ -1662,18 +1722,25 @@ function chat() {
   // Keep the hero scrapbook alive: cards glide to new destinations every five seconds.
   if (document.body.dataset.page === "home") {
     const scenes = [
-      ["assets/valley.jpg", "Dzükou Valley"],
-      ["assets/bridge.jpg", "Living root bridge"],
-      ["assets/boats.jpg", "Dawki river"],
-      ["assets/falls.jpg", "Meghalaya waterfalls"],
-      ["assets/road.jpg", "Roads through the hills"],
-      ["assets/hikers.jpg", "Trail days"],
+      [TWU_STATE_PHOTOS["Nagaland"], "Dzükou Valley"],
+      [TWU_STATE_PHOTOS["Meghalaya"], "Living root bridges"],
+      [TWU_STATE_PHOTOS["Manipur"], "River country"],
+      [TWU_STATE_PHOTOS["Assam"], "Wild Assam"],
+      [TWU_STATE_PHOTOS["Arunachal Pradesh"], "Roads through the hills"],
+      [TWU_STATE_PHOTOS["Sikkim"], "Mountain mornings"],
     ];
     let sceneIndex = 0;
     const cards = $$("#pl .pola");
     if (cards.length)
       window.setInterval(() => {
         sceneIndex = (sceneIndex + 1) % scenes.length;
+        cards.forEach((card, index) => {
+          const scene = scenes[(sceneIndex + index) % scenes.length];
+          const inner = card.querySelector("div");
+          const caption = card.querySelector("span");
+          if (inner) inner.style.backgroundImage = `linear-gradient(135deg,rgba(12,30,36,.08),rgba(12,30,36,.2)),url("${scene[0]}")`;
+          if (caption) caption.textContent = scene[1];
+        });
         const container = $("#pl");
         const before = new Map(
           cards.map((card) => [card, card.getBoundingClientRect()]),

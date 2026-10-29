@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Trail With Us: your best travel buddy in Northeast India</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Syne:wght@700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
@@ -19,26 +19,49 @@
         muted
         loop
         playsinline
-        poster="assets/hikers.jpg"
+        poster="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1800&q=88"
         aria-hidden="true"
       >
         <source src="assets/hero-video.mp4" type="video/mp4" />
       </video>
       <div class="w">
-        <div>
+        <div class="hero-copy">
+          <p class="eyebrow hero-kicker">NORTHEAST INDIA · LOCALLY CONNECTED</p>
           <h1>
-            <span><em>Trail</em></span
-            ><span><em>With Us</em></span>
+            <span>Find your</span
+            ><span><em>kind of wild.</em></span>
           </h1>
           <p class="lead">
-            Pick a place. We match you with a local guide who speaks your
-            language, then book the rest.
+            Local guides, tucked-away stays and journeys across Northeast India —
+            thoughtfully connected, from the first idea to the last mile.
           </p>
           <div class="hero-auth-actions" aria-label="Account actions">
             <a class="btn alt" href="login.html">Log in</a>
             <a class="btn" href="login.html?mode=signup">Create account</a>
           </div>
-          <form class="find" id="ff">
+        </div>
+        <div class="polas" id="pl">
+          <a
+            class="pola"
+            href="gallery.html"
+            aria-label="Explore Dzükou Valley photos"
+            ><div style="background-image:linear-gradient(135deg,rgba(25,61,43,.1),rgba(25,61,43,.25)),url(https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=85)"></div>
+            <span>Dzükou Valley</span></a
+          ><a
+            class="pola"
+            href="gallery.html"
+            aria-label="Explore living root bridge photos"
+            ><div style="background-image:linear-gradient(135deg,rgba(25,61,43,.1),rgba(25,61,43,.25)),url(https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=85)"></div>
+            <span>Living root bridge</span></a
+          ><a
+            class="pola"
+            href="gallery.html"
+            aria-label="Explore Dawki river photos"
+            ><div style="background-image:linear-gradient(135deg,rgba(25,61,43,.1),rgba(25,61,43,.25)),url(https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=900&q=85)"></div>
+            <span>Dawki river</span></a
+          >
+        </div>
+                  <form class="find" id="ff">
             <label>State<select data-k="state" required></select></label
             ><label
               >Place to visit<select
@@ -50,35 +73,13 @@
             ><label>Travellers<select data-k="trav"></select></label
             ><button class="btn">Find my guide</button>
           </form>
-        </div>
-        <div class="polas" id="pl">
-          <a
-            class="pola"
-            href="gallery.html"
-            aria-label="Explore Dzükou Valley photos"
-            ><div style="background-image: url(assets/dzukou-valley.jpg)"></div>
-            <span>Dzükou Valley</span></a
-          ><a
-            class="pola"
-            href="gallery.html"
-            aria-label="Explore living root bridge photos"
-            ><div style="background-image: url(assets/bridge.jpg)"></div>
-            <span>Living root bridge</span></a
-          ><a
-            class="pola"
-            href="gallery.html"
-            aria-label="Explore Dawki river photos"
-            ><div style="background-image: url(assets/boats.jpg)"></div>
-            <span>Dawki river</span></a
-          >
-        </div>
       </div>
     </section>
-    <div class="mq"><div id="mq"></div></div>
 
     <section class="blk">
       <div class="w">
-        <h2 class="sec-h">Plan less. Experience more.</h2>
+        <p class="eyebrow">YOUR TRIP, ALL IN ONE PLACE</p>
+        <h2 class="sec-h">Go beyond the obvious.</h2>
         <p style="max-width: 50ch">
           Discover guides, stays, rides, gear and trips designed around the
           Northeast.
@@ -87,11 +88,22 @@
       </div>
     </section>
 
+    <section class="blk unique-services" id="unique-services">
+      <div class="w">
+        <div class="service-section-head">
+          <p class="eyebrow">LOCAL KNOW-HOW. BETTER JOURNEYS.</p>
+          <h2 class="sec-h">The details that make<br /><em>a trip feel personal.</em></h2>
+          <p>Useful local knowledge, practical planning tools and a community for the parts of travel that generic booking sites often miss.</p>
+        </div>
+        <div class="service-feature-grid" id="unique-services-grid"></div>
+      </div>
+    </section>
+
     <section class="blk explore-states">
       <div class="w">
         <div class="state-section-head">
-          <p class="eyebrow">THE NORTHEAST, ALL TOGETHER</p>
-          <h2 class="sec-h">Eight states. Countless ways to wander.</h2>
+          <p class="eyebrow">A REGION OF ITS OWN</p>
+          <h2 class="sec-h">Eight states.<br /><em>Endless elsewhere.</em></h2>
           <p>
             From high Himalayan passes to river islands, choose a state and
             explore its signature places.
@@ -105,49 +117,53 @@
         </p>
       </div>
     </section>
-    <section class="blk">
+    <section class="blk safety-feature" id="safety-preview">
       <div class="w safe">
-        <div>
-          <h2 class="sec-h">Safety is built in, not bolted on</h2>
-          <p style="max-width: 44ch; margin-bottom: 24px">
-            Share your current location link, add emergency contacts and use the
-            safety demo to prepare a message. This demo does not automatically
-            alert anyone; call 112 in an emergency.
+        <div class="safe-copy">
+          <p class="eyebrow">TRAVEL WITH CONFIDENCE</p>
+          <h2 class="sec-h">Safety isn’t an add-on.<br /><em>It’s part of the plan.</em></h2>
+          <p class="safe-description">
+            Keep route planning, location sharing and emergency contacts within reach.
+            Prepare before you leave, and know what to do if a trek takes an unexpected turn.
           </p>
-          <a class="btn" href="safety.html">Open safety centre</a>
-        </div>
-        <div class="phone">
-          <div class="map">
-            <svg viewBox="0 0 300 260" width="100%">
-              <path
-                d="M0 200q60-90 120-40t110-60 70-30"
-                stroke="#fcf1d0"
-                stroke-width="4"
-                fill="none"
-                stroke-dasharray="2 10"
-                stroke-linecap="round"
-              />
-              <circle cx="230" cy="100" r="24" fill="#fcf1d0" opacity=".25">
-                <animate
-                  attributeName="r"
-                  values="10;30;10"
-                  dur="2s"
-                  repeatCount="indefinite"
-                />
-              </circle>
-              <circle cx="230" cy="100" r="9" fill="#fcf1d0" />
-            </svg>
+          <div class="safe-actions">
+            <a class="btn" href="safety.html">Explore safety tools <span aria-hidden="true">↗</span></a>
+            <span class="safe-note"><span class="safe-note-dot" aria-hidden="true"></span> Your location stays under your control</span>
           </div>
-          <a class="sosdemo" href="safety.html#sos"
-            >SOS demo · hold to prepare</a
-          >
+        </div>
+        <div class="safety-visual" aria-label="Illustration preview of route planning and safety tools">
+          <div class="safety-visual-top">
+            <span class="safety-overline">FIELD NOTES <b>04</b></span>
+            <span class="safety-pill"><span aria-hidden="true"></span> PREPARE AHEAD</span>
+          </div>
+          <div class="safety-map" aria-hidden="true">
+            <svg class="safety-map-art" viewBox="0 0 520 300" preserveAspectRatio="xMidYMid slice">
+              <path d="M-25 235 C45 175 67 208 115 157 S197 91 245 142 S330 210 378 134 S450 58 550 83" fill="none" stroke="#fffdf7" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 12" />
+              <path d="M-10 264 C59 201 87 236 142 184 S220 126 270 164 S352 228 398 152 S465 90 545 112" fill="none" stroke="#799f93" stroke-width="1.5" opacity=".42" />
+              <path d="M-15 111 C45 75 83 111 128 78 S215 27 258 58 S333 121 391 69 S477 29 535 52" fill="none" stroke="#fffdf7" stroke-width="1.5" opacity=".56" />
+              <path d="M20 20 L70 58 L105 36 L160 84 L209 45 L263 78 L300 35 L350 65 L399 20 L462 55 L500 22" fill="none" stroke="#f9f7ef" stroke-width="1" opacity=".4" />
+              <circle cx="114" cy="157" r="20" fill="#fffdf7" opacity=".32" />
+              <circle cx="114" cy="157" r="7" fill="#fffdf7" />
+              <circle cx="378" cy="134" r="25" fill="#e97951" opacity=".18" />
+              <circle cx="378" cy="134" r="8" fill="#e97951" />
+            </svg>
+            <div class="safety-map-label safety-map-label--start"><span class="safety-map-dot"></span><span><small>ROUTE START</small><b>Your next journey</b></span></div>
+            <div class="safety-map-label safety-map-label--check"><span class="safety-map-pin">↗</span><span><small>BEFORE YOU GO</small><b>Check the route</b></span></div>
+            <span class="safety-map-caption">A plan is part of the adventure.</span>
+          </div>
+          <div class="safety-visual-bottom">
+            <div class="safety-tool-summary"><span class="safety-tool-icon" aria-hidden="true">⌁</span><span><small>SAFETY TOOLKIT</small><b>GPS · Risk zones · SOS</b></span></div>
+            <a class="sosdemo" href="safety.html#sos"><span class="sosdemo-icon" aria-hidden="true">↗</span><span><small>WHEN NEEDED</small><b>Prepare an SOS message</b></span></a>
+          </div>
+          <p class="safety-disclaimer">Demo tools only · nothing is sent automatically</p>
         </div>
       </div>
     </section>
 
     <section class="blk mid">
       <div class="w">
-        <h2 class="sec-h">Guides travellers will meet</h2>
+        <p class="eyebrow">PEOPLE BEFORE PLACES</p>
+        <h2 class="sec-h">Meet the locals who know.</h2>
         <div class="grid" id="fg" style="margin-top: 34px"></div>
         <p style="margin-top: 34px">
           <a class="btn alt" href="guides.html">See all guides</a>
@@ -157,7 +173,8 @@
 
     <section class="blk">
       <div class="w">
-        <h2 class="sec-h">Ready trails</h2>
+        <p class="eyebrow">START WITH A PLAN</p>
+        <h2 class="sec-h">Journeys worth taking.</h2>
         <div class="grid" id="pk" style="margin-top: 34px"></div>
       </div>
     </section>
@@ -165,14 +182,11 @@
     <script src="supabase-config.js"></script>
     <script src="app.js"></script>
     <script>
-      $("#mq").innerHTML = DEST.map((d) => `<span>${d}</span>`)
-        .join("")
-        .repeat(4);
-      const M = [
+const M = [
         [
           "guides",
-          "Guide matching",
-          "Local guide profiles by destination, language and interest.",
+          "Language-first guide matching",
+          "Find admin-approved local guide listings by destination, language and interest.",
           "🧑‍🤝‍🧑",
         ],
         [
@@ -183,14 +197,14 @@
         ],
         [
           "stays",
-          "Local homestays",
-          "Sleep in family homes with local meals.",
+          "Hidden hill homestays",
+          "Discover offbeat family homestays and trekking-side stays, subject to provider availability.",
           "🏡",
         ],
         [
           "rides",
-          "Transport",
-          "Taxis, private vehicles and shared seats.",
+          "Local transport",
+          "Compare local taxis, shared seats and private vehicles for remote destinations.",
           "🚙",
         ],
         [
@@ -201,9 +215,15 @@
         ],
         [
           "safety",
-          "GPS and SOS",
-          "GPS preview, check-ins and emergency-contact message tools.",
+          "GPS and route alerts",
+          "Track your location, create your own risk zones and check current weather risk signals.",
           "📍",
+        ],
+        [
+          "community",
+          "Trekker Q&A and buddies",
+          "Ask trail questions, share first-hand tips and find people interested in a similar trek.",
+          "💬",
         ],
         [
           "packages",
@@ -227,6 +247,64 @@
             `<a class="card" href="packages.html">${pic(p[4])}<span class="tagc">${p[3]}</span></div><div class="cb"><h3>${p[0]}</h3><small>${p[1]} days</small><p>${p[5]}</p><span class="price">from ${inr(p[2])}</span></div></a>`,
         )
         .join("");
+      const SERVICE_FEATURES = [
+        {
+          n: "01",
+          label: "LOCAL KNOWLEDGE",
+          title: "Language-based guide selection",
+          text: "Choose a destination and language to compare local guide listings. Approval status is shown on each profile so sample listings are not mistaken for verified providers.",
+          href: "guides.html",
+          link: "Find a guide",
+          icon: "🗣️",
+        },
+        {
+          n: "02",
+          label: "STAY OFF THE BEATEN PATH",
+          title: "Hidden hill homestays",
+          text: "Find family-run stays in hill towns and near trekking routes. Published inventory and availability depend on the providers added to the site.",
+          href: "stays.html",
+          link: "Explore stays",
+          icon: "🏡",
+        },
+        {
+          n: "03",
+          label: "LAST-MILE PLANNING",
+          title: "Local transport discovery",
+          text: "Compare shared seats, local taxis and private vehicles for remote destinations. Displayed fares are planning estimates until a provider confirms them.",
+          href: "rides.html",
+          link: "Compare transport",
+          icon: "🚐",
+        },
+        {
+          n: "04",
+          label: "TRAVEL MORE SAFELY",
+          title: "GPS tracking and route alerts",
+          text: "Track your route, mark personal danger zones and check current weather conditions. The site does not dispatch emergency help or replace official alerts.",
+          href: "safety.html",
+          link: "Open safety centre",
+          icon: "🧭",
+        },
+        {
+          n: "05",
+          label: "LEARN FROM TREKKERS",
+          title: "Community Q&A and trek buddies",
+          text: "Ask practical questions, post first-hand trail tips and share a planned trek date when looking for a travel buddy. A Supabase migration enables shared posts and replies.",
+          href: "community.html",
+          link: "Join the community",
+          icon: "💬",
+        },
+      ];
+      const serviceGrid = $("#unique-services-grid");
+      if (serviceGrid) {
+        serviceGrid.innerHTML = SERVICE_FEATURES.map((item) => `
+          <article class="service-feature-card">
+            <div class="service-feature-top"><span class="service-number">${item.n}</span><span class="service-icon" aria-hidden="true">${item.icon}</span></div>
+            <p class="service-kicker">${item.label}</p>
+            <h3>${item.title}</h3>
+            <p class="service-description">${item.text}</p>
+            <a href="${item.href}" class="service-link">${item.link}<span aria-hidden="true">↗</span></a>
+          </article>`).join("");
+      }
       window.twuRenderStateFeatures = () => {
         $("#state-feature-grid").innerHTML = STATE_FEATURES.map((state, i) => {
           const image =
@@ -235,7 +313,7 @@
               : `assets/${String(state.image || "valley")
                   .replace(/^assets\//, "")
                   .replace(/\.jpg$/i, "")}.jpg`;
-          return `<a class="state-feature-card" href="destinations.html?state=${encodeURIComponent(state.name)}" style="--state-delay:${i * 55}ms"><div class="state-feature-image" style="background-image:url(&quot;${safeText(image)}&quot;)"></div><div class="state-feature-copy"><span class="state-index">0${i + 1}</span><h3>${safeText(state.name)}</h3><p>${state.places.slice(0, 3).map(safeText).join(" · ")}</p><span class="state-feature-link">Explore state <b aria-hidden="true">↗</b></span></div></a>`;
+          return `<a class="state-feature-card" href="destinations.html?state=${encodeURIComponent(state.name)}" style="--state-delay:${i * 55}ms"><div class="state-feature-image" style="background-image:linear-gradient(135deg,rgba(25,61,43,.16),rgba(25,61,43,.36)),url(&quot;${safeText(image)}&quot;)"></div><div class="state-feature-copy"><span class="state-index">0${i + 1}</span><h3>${safeText(state.name)}</h3><p>${state.places.slice(0, 3).map(safeText).join(" · ")}</p><span class="state-feature-link">Explore state <b aria-hidden="true">↗</b></span></div></a>`;
         }).join("");
       };
       window.twuRenderStateFeatures();
@@ -296,14 +374,20 @@
               "tawang and ziro loop": "road",
             };
             const image = images[titleKey];
-            return image ? `assets/${image}.jpg` : "assets/travel-packages.jpg";
+            const remote = {
+              valley: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1100&q=85",
+              bridge: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1100&q=85",
+              boats: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1100&q=85",
+              road: "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1100&q=85"
+            };
+            return remote[image] || remote.valley;
           };
           const photoHtml = (row) => {
             const url = String(row.image_url || defaultImage(row.title)).trim();
             const safeUrl =
-              url.startsWith("assets/") || /^https:\/\//i.test(url)
+              /^https:\/\//i.test(url)
                 ? url
-                : "assets/travel-packages.jpg";
+                : "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1100&q=85";
             return `<div class="pic" role="img" aria-label="${escapeText(row.title)}" style="background-image:url(&quot;${escapeText(safeUrl)}&quot;)">`;
           };
           $("#pk").innerHTML = rows.length
@@ -362,15 +446,18 @@
         location.href =
           "guides.html" + (params.size ? "?" + params.toString() : "");
       };
-      addEventListener("mousemove", (e) => {
-        const x = e.clientX / innerWidth - 0.5,
-          y = e.clientY / innerHeight - 0.5;
-        $$(".pola").forEach(
-          (p, i) =>
-            (p.style.translate = `${x * (i + 1) * -14}px ${y * (i + 1) * -14}px`),
-        );
-        $("#bg0").style.translate = `${x * -24}px ${y * -24}px`;
-      });
+      if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        addEventListener("mousemove", (e) => {
+          const x = e.clientX / innerWidth - 0.5,
+            y = e.clientY / innerHeight - 0.5;
+          $$(".pola").forEach(
+            (p, i) =>
+              (p.style.translate = `${x * (i + 1) * -10}px ${y * (i + 1) * -10}px`),
+          );
+          const bg = $("#bg0");
+          if (bg) bg.style.translate = `${x * -15}px ${y * -15}px`;
+        });
+      }
     </script>
     <script src="motion.js" defer></script>
   </body>
