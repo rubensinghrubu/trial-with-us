@@ -65,6 +65,14 @@
     <script>
       (async () => {
         const $ = (selector) => document.querySelector(selector);
+        // Save the bundled per-destination image paths BEFORE Supabase loads.
+        // Published image_url values should not replace the project's local assets.
+        const originalLocalDestinationImages = new Map(
+          DESTINATION_CATALOG.map((place) => [
+            `${String(place.state).trim().toLocaleLowerCase()}|${String(place.place).trim().toLocaleLowerCase()}`,
+            place.image,
+          ]),
+        );
         if (window.twuLoadPublishedPlaces)
           await window.twuLoadPublishedPlaces();
         const stateSelect = $("#destination-state");
@@ -102,7 +110,11 @@
           "Tripura": "states/tripura/ujjayanta-palace"
         };
         const imageFor = (destination) => {
-          const value = String(destination.image || statePhotos[destination.state] || statePhotos.Meghalaya).trim();
+          const key = `${String(destination.state).trim().toLocaleLowerCase()}|${String(destination.place).trim().toLocaleLowerCase()}`;
+          // Prefer the original local image registered for this destination.
+          // This prevents stale Supabase/remote image URLs from replacing it.
+          const bundledImage = originalLocalDestinationImages.get(key);
+          const value = String(bundledImage || destination.image || statePhotos[destination.state] || statePhotos.Meghalaya).trim();
           if (/^https?:\/\//i.test(value) || value.startsWith("data:")) return value;
           let local = value.replace(/^\/+/, "").replace(/^assets\//i, "");
           if (!/\.(?:jpe?g|png|webp|avif|gif|svg)$/i.test(local)) local += ".jpg";

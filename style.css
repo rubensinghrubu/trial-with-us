@@ -506,7 +506,7 @@ a:focus-visible {
   box-shadow: 8px 8px 0 var(--n2);
   max-width: 760px;
 }
-}
+
 .sec-h {
   font-size: clamp(2.2rem, 5.5vw, 4.4rem);
   letter-spacing: -0.03em;
@@ -3129,7 +3129,7 @@ a.card { display: block; color: inherit; text-decoration: none; }
 .find select { min-width: 0; width: 100%; padding: 11px 30px 11px 10px; border: 0; border-radius: 8px; background-color: #f3f4f0; color: var(--n0); font-size: .88rem; text-transform: none; letter-spacing: 0; }
 .find .btn { min-width: 155px; min-height: 49px; border-radius: 12px; white-space: normal; background: var(--n2); border-color: var(--n2); }
 .find .btn:hover { background: #d96843; border-color: #d96843; }
-}
+
 
 /* Homepage content modules */
 .mods { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 15px; margin-top: 34px; }
