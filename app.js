@@ -1098,7 +1098,7 @@ function layout() {
   <a href="destinations.html" class="${b.page === "destinations" ? "on" : ""}"><span aria-hidden="true">⌖</span><small>Explore</small></a>
   <a href="community.html" class="${b.page === "community" ? "on" : ""}"><span aria-hidden="true">◎</span><small>Community</small></a>
   <a href="trip.html" class="${b.page === "trip" ? "on" : ""}"><span aria-hidden="true">♧</span><small>My trip</small></a>
-  <a href="login.html" class="${b.page === "login" ? "on" : ""}"><span aria-hidden="true">○</span><small>Account</small></a>
+  <a href="account.html" class="${b.page === "account" ? "on" : ""}"><span aria-hidden="true">○</span><small>Account</small></a>
 </nav>`, 
   );
   const nv = $("#nv"),

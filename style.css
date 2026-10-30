@@ -3137,7 +3137,7 @@ a.card { display: block; color: inherit; text-decoration: none; }
 .mod:hover { transform: translateY(-4px); box-shadow: 0 14px 28px rgba(21,43,53,.08); }
 .mod:nth-child(3n+2), .mod:nth-child(3n) { background: var(--surface); }
 .mod .ic { display: grid; place-items: center; width: 49px; height: 49px; margin-bottom: 22px; border-radius: 15px; background: #eef1e9; font-size: 1.5rem; }
-.mod h3 { margin-bottom: 9px; font: 400 1.35rem/1.12 var(--d); letter-spacing: -.035em; }
+.mod h3 { margin-bottom: 9px; font: 400 1.35rem/1.12 var(--d); letter-spacing: -.035em; color: var(--n0); }
 .mod p { color: var(--muted); font-size: .84rem; line-height: 1.55; }
 .mod > b { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--line); color: var(--n1); font-size: .8rem; }
 .unique-services { background: #e7edea; }
@@ -4034,3 +4034,4 @@ header.top nav .nav-indicator {
   .state-feature-copy h3 { min-height: 0; font-size: 1.18rem; }
   .state-feature-copy p { min-height: 0; font-size: .72rem; }
 }
+
