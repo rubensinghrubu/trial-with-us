@@ -968,7 +968,7 @@ function matches() {
   return G.map((g, i) => {
     let score = 0,
       reasons = [];
-    if (g[1] === di()) {
+    if (st.dest && g[1] === di()) {
       score += 50;
       reasons.push("knows " + st.dest);
     }
@@ -1554,7 +1554,16 @@ function bind(cb) {
           st.dest = currentPlace;
           return;
         }
-        options = DEST.filter(
+        // On the Guides page, "All states" means no destination constraint.
+      if (!homeCascade && document.body.dataset.page === "guides" && chosenState === "All states") {
+        select.disabled = true;
+        select.innerHTML = `<option value="">All places</option>`;
+        select.value = "";
+        st.dest = "";
+        return;
+      }
+      select.disabled = false;
+      options = DEST.filter(
           (place, index) =>
             isDestinationVisible(index) &&
             (chosenState === "All states" || STATE[index] === chosenState),
@@ -1579,6 +1588,9 @@ function bind(cb) {
     st[key] = NUM.includes(key) ? +event.target.value : event.target.value;
     if (key === "state" && homeCascade) {
       // A destination chosen for the previous state must not remain selected.
+      st.dest = "";
+    } else if (key === "state" && document.body.dataset.page === "guides" && st.state === "All states") {
+      // All states must clear the destination filter so every guide is included.
       st.dest = "";
     } else if (
       key === "state" &&
