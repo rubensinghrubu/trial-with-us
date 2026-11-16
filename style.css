@@ -4035,3 +4035,19 @@ header.top nav .nav-indicator {
   .state-feature-copy p { min-height: 0; font-size: .72rem; }
 }
 
+
+
+/* Community feed: make the activity type and preview content easy to scan. */
+.community-post-labels { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; min-width: 0; }
+.community-example-label { display: inline-flex; align-items: center; padding: 5px 9px; border: 1px dashed #c7a978; border-radius: 99px; background: #fff7e8; color: #76572b; font-size: .67rem; font-weight: 800; letter-spacing: .025em; }
+.community-example-notice { margin-bottom: 11px; padding: 9px 11px; border-radius: 10px; background: #fff7e8; color: #76572b; font-size: .76rem; line-height: 1.45; }
+.community-post { transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease; }
+.community-post:hover { border-color: #c8d7c9; box-shadow: 0 10px 26px rgba(25,61,43,.075); transform: translateY(-2px); }
+.community-reply-toggle:hover { color: var(--n0); text-decoration: underline; }
+.community-status.info { background: #f1f4ed; color: #506454; border-color: #dce5d9; }
+.community-reply-panel[hidden] { display: none; }
+@media (max-width: 600px) {
+  .community-post-labels { gap: 5px; }
+  .community-example-label { font-size: .61rem; }
+  .community-post-top time { font-size: .7rem; }
+}

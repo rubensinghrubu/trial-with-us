@@ -21,6 +21,32 @@
   const replyCache = new Map();
   const busyReplies = new Set();
 
+  // Clearly labelled local examples keep a new community page from looking empty.
+  // They are never inserted into Supabase and disappear once real posts exist.
+  const SAMPLE_POSTS = [
+    { id: "sample-nongriat", author_name: "Aarav M.", post_type: "question", title: "Is the Nongriat trek manageable for a first-time trekker?", body: "I’m planning a visit to the Double Decker Living Root Bridge. How much time should I keep for the descent and climb back, and are there reliable places to refill water along the way?", state: "Meghalaya", destination: "Nongriat", created_at: "2026-11-14T09:30:00Z", reply_count: 2, is_sample: true },
+    { id: "sample-dzukou", author_name: "Maya T.", post_type: "buddy", title: "Anyone planning Dzükou Valley this season?", body: "I’m hoping to do a relaxed 2-day trip and would prefer to join a small group. I’m a beginner, comfortable with steady uphill walking, and happy to coordinate plans here first.", state: "Nagaland", destination: "Dzükou Valley", travel_date: null, experience_level: "Beginner", created_at: "2026-11-12T12:00:00Z", reply_count: 2, is_sample: true },
+    { id: "sample-sela", author_name: "Tenzin L.", post_type: "tip", title: "A few things to remember before driving to Sela Pass", body: "Start early, keep warm layers within reach, and check local road and weather updates before leaving. Conditions can change quickly at high altitude. Don’t treat a clear morning as a guarantee for the whole day.", state: "Arunachal Pradesh", destination: "Sela Pass", created_at: "2026-11-10T07:15:00Z", reply_count: 2, is_sample: true },
+    { id: "sample-majuli", author_name: "Riya D.", post_type: "question", title: "How many days should I spend in Majuli?", body: "Would two full days be enough to explore the island at an unhurried pace, visit a couple of satras and enjoy the river views? Also, what’s the best way to plan around ferry timings?", state: "Assam", destination: "Majuli", created_at: "2026-11-08T14:20:00Z", reply_count: 1, is_sample: true },
+  ];
+  const SAMPLE_REPLIES = {
+    "sample-nongriat": [
+      { author_name: "Nisha P.", created_at: "2026-11-14T11:10:00Z", body: "Keep most of the day free. The climb back is the tiring part, especially in humid weather. Start early and carry enough water." },
+      { author_name: "Local trail note", created_at: "2026-11-14T13:45:00Z", body: "Stairs are steep in sections. Wear shoes with grip and check current conditions with a local guide before setting out." },
+    ],
+    "sample-dzukou": [
+      { author_name: "Kezha R.", created_at: "2026-11-12T15:00:00Z", body: "I’d recommend checking the current entry rules and accommodation availability before fixing dates." },
+      { author_name: "Ananya S.", created_at: "2026-11-12T17:20:00Z", body: "I’m interested too. Let’s compare dates here first and avoid sharing phone numbers publicly." },
+    ],
+    "sample-sela": [
+      { author_name: "Pema N.", created_at: "2026-11-10T09:00:00Z", body: "Also keep some snacks and water in the vehicle. Don’t stop in unsafe places just to take photos." },
+      { author_name: "Trail team note", created_at: "2026-11-10T10:30:00Z", body: "Good reminder: confirm road access locally on the day of travel." },
+    ],
+    "sample-majuli": [
+      { author_name: "Bikash K.", created_at: "2026-11-08T16:10:00Z", body: "Two days works for a short visit, but plan ferry crossings first. Timings can affect how much you can fit in." },
+    ],
+  };
+
   function showStatus(message, type = "info") {
     const node = $("#community-status");
     if (!node) return;
@@ -92,7 +118,7 @@
       const replyCount = Number(post.reply_count || 0);
       const details = [post.destination, post.state, post.post_type === "buddy" && post.travel_date ? `Trek date: ${prettyDate(post.travel_date)}` : "", post.post_type === "buddy" && post.experience_level ? post.experience_level : ""].filter(Boolean);
       return `<article class="community-post" data-post-id="${escapeHTML(post.id)}">
-        <div class="community-post-top"><span class="community-kind kind-${escapeHTML(post.post_type)}"><b aria-hidden="true">${typeIcons[post.post_type] || "•"}</b>${typeLabels[post.post_type] || "Discussion"}</span><time datetime="${escapeHTML(post.created_at || "")}">${prettyTime(post.created_at)}</time></div>
+        <div class="community-post-top"><div class="community-post-labels"><span class="community-kind kind-${escapeHTML(post.post_type)}"><b aria-hidden="true">${typeIcons[post.post_type] || "•"}</b>${typeLabels[post.post_type] || "Discussion"}</span>${post.is_sample ? '<span class="community-example-label">Sample conversation</span>' : ''}</div><time datetime="${escapeHTML(post.created_at || "")}">${prettyTime(post.created_at)}</time></div>
         <h3>${escapeHTML(post.title)}</h3>
         <p class="community-post-body">${escapeHTML(post.body).replace(/\n/g, "<br>")}</p>
         ${details.length ? `<div class="community-post-tags">${details.map((detail) => `<span>${escapeHTML(detail)}</span>`).join("")}</div>` : ""}
@@ -117,6 +143,13 @@
 
   async function loadReplies(postId, panel) {
     panel.hidden = false;
+    const samplePost = posts.find((post) => post.id === postId && post.is_sample);
+    if (samplePost) {
+      const examples = SAMPLE_REPLIES[postId] || [];
+      const replyMarkup = examples.map((reply) => `<div class="community-reply"><span class="community-reply-avatar" aria-hidden="true">${escapeHTML(currentInitials(reply.author_name))}</span><div><p><b>${escapeHTML(reply.author_name)}</b><small>${prettyTime(reply.created_at)}</small></p><div>${escapeHTML(reply.body)}</div></div></div>`).join("");
+      panel.innerHTML = `<div class="community-replies-list">${replyMarkup}</div>`;
+      return;
+    }
     panel.innerHTML = `<p class="community-no-replies">Loading replies…</p>`;
     if (replyCache.has(postId)) {
       renderReplies(postId, replyCache.get(postId));
@@ -148,8 +181,12 @@
     const nextPosts = Array.isArray(data) ? data : [];
     const { data: replyRows, error: replyError } = await client.from("community_replies").select("post_id");
     const counts = replyError ? new Map() : countsByPost(replyRows);
-    posts = nextPosts.map((post) => ({ ...post, reply_count: counts.get(post.id) || 0 }));
-    showStatus(posts.length ? `${posts.length} recent discussion${posts.length === 1 ? "" : "s"} · posts are public, posting requires an account.` : "No discussions yet. Start the first one and help another traveller plan better.", posts.length ? "success" : "info");
+    posts = nextPosts.length
+      ? nextPosts.map((post) => ({ ...post, reply_count: counts.get(post.id) || 0 }))
+      : SAMPLE_POSTS;
+    showStatus(nextPosts.length
+      ? `${nextPosts.length} recent discussion${nextPosts.length === 1 ? "" : "s"} · posts are public, posting requires an account.`
+      : "", nextPosts.length ? "success" : "info");
     renderPosts();
   }
 
